@@ -1,4 +1,4 @@
-/// @desc Puertas de navegación según el cuarto actual
+/// @desc Puertas de navegación según el cuarto actual y creación de sistemas
 door_scale = 1.3;
 hover = -1;
 
@@ -6,17 +6,21 @@ switch (room) {
     case rm_sala:
         room_title = "Sala";
         doors = [
-            { label: "Cocina", target: rm_cocina, x: 150, y: 1110 },
-            { label: "Baño",   target: rm_bano,   x: 570, y: 1110 }
+            { label: "Cocina", target: rm_cocina, x: 150, y: 1140 },
+            { label: "Baño",   target: rm_bano,   x: 570, y: 1140 }
         ];
         break;
     case rm_cocina:
         room_title = "Cocina";
-        doors = [ { label: "Sala", target: rm_sala, x: 150, y: 1110 } ];
+        doors = [ { label: "Sala", target: rm_sala, x: 150, y: 1140 } ];
+        // Asegurar que obj_cocina exista en la cocina
+        if (!instance_exists(obj_cocina)) {
+            instance_create_layer(0, 0, "Instances", obj_cocina);
+        }
         break;
     default:
         room_title = "Baño";
-        doors = [ { label: "Sala", target: rm_sala, x: 150, y: 1110 } ];
+        doors = [ { label: "Sala", target: rm_sala, x: 150, y: 1140 } ];
         break;
 }
 
