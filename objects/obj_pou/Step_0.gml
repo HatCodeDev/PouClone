@@ -1,4 +1,4 @@
-/// @description Respiración, expresiones, reacción táctil y física
+/// @description Respiración, expresiones, reacción táctil, física y selector en la sala
 bob_t += 3;
 
 // Manejo del sacudido de cabeza (cuando rechaza comida)
@@ -11,22 +11,34 @@ if (head_shake_timer > 0) {
 
 if (chew_timer > 0) chew_timer--;
 
-// Teclas 1 a 6 para forzar emociones en desarrollo/testing
-var _tecla_pulsada = false;
+// Teclas 1 a 6 para probar emociones manualmente
 for (var _i = 0; _i < 6; _i++) {
     if (keyboard_check_pressed(ord("1") + _i)) {
         cambiar_emocion(_i);
-        _tecla_pulsada = true;
+        manual_override = true;
     }
 }
 
-// Si no se forzó con teclado, actualizar la emoción automáticamente según estado
-if (!_tecla_pulsada) {
+// Botones de cambio de estado ÚNICAMENTE en la sala (rm_sala)
+if (room == rm_sala && mouse_check_button_pressed(mb_left)) {
+    for (var _i = 0; _i < 6; _i++) {
+        var _bx = 40 + (_i mod 3) * 220;
+        var _by = 850 + floor(_i / 3) * 80;
+        if (point_in_rectangle(mouse_x, mouse_y, _bx, _by, _bx + 200, _by + 64)) {
+            cambiar_emocion(_i);
+            manual_override = true;
+            audio_play_sound(snd_click, 1, false);
+        }
+    }
+}
+
+// En la cocina o cuando no hay override manual, actualizar la emoción automáticamente según la interacción
+if (room == rm_cocina || !manual_override) {
     if (mouth_open || chew_timer > 0) {
         cambiar_emocion(PouEmocion.Feliz);
     } else if (refusing || head_shake_timer > 0) {
         cambiar_emocion(PouEmocion.Serio);
-    } else {
+    } else if (!manual_override) {
         if (global.pou_hambre < 35) {
             cambiar_emocion(PouEmocion.Hambriento);
         } else if (global.pou_hambre >= 75) {

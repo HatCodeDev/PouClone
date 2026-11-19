@@ -1,4 +1,4 @@
-/// @description Dibujo de Pou, sombra, respiración, masticación y sacudido de cabeza
+/// @description Dibujo de Pou, sombra, respiración, masticación y botones de emociones en la sala
 var _breath = dsin(bob_t) * 0.03;
 var _react = dsin(squash_t * 720) * 0.12 * squash_t;
 var _chew = (chew_timer > 0) ? dsin(chew_timer * 72) * 0.08 : 0;
@@ -15,3 +15,41 @@ draw_set_color(c_white);
 
 // Dibujo de Pou (con head_shake_x en caso de negación con la cabeza)
 draw_sprite_ext(sprite_index, image_index, x + head_shake_x, y + jump_y, _sx, _sy, 0, c_white, 1);
+
+// Dibujar los botones de cambio de emoción ÚNICAMENTE en la sala (rm_sala)
+if (room == rm_sala) {
+    var _c_pou_text   = make_color_rgb(52, 36, 20);
+    var _c_pou_border = make_color_rgb(75, 52, 30);
+    var _c_pou_pill   = make_color_rgb(255, 250, 238);
+    var _c_pou_shadow = make_color_rgb(215, 205, 185);
+    var _c_active_bg  = make_color_rgb(85, 128, 75); // Verde activo estilo Pou
+
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+
+    for (var _i = 0; _i < 6; _i++) {
+        var _bx = 40 + (_i mod 3) * 220;
+        var _by = 850 + floor(_i / 3) * 80;
+        var _is_sel = (_i == emocion);
+
+        // Sombra suave
+        draw_set_color(_c_pou_shadow);
+        draw_roundrect(_bx, _by + 3, _bx + 200, _by + 67, false);
+
+        // Fondo del botón
+        draw_set_color(_is_sel ? _c_active_bg : _c_pou_pill);
+        draw_roundrect(_bx, _by, _bx + 200, _by + 64, false);
+
+        // Borde marrón
+        draw_set_color(_is_sel ? make_color_rgb(50, 80, 45) : _c_pou_border);
+        draw_roundrect(_bx, _by, _bx + 200, _by + 64, true);
+
+        // Texto del botón en estilo Pou
+        draw_set_color(_is_sel ? c_white : _c_pou_text);
+        draw_text_transformed(_bx + 100, _by + 32, emocion_nombres[_i], 1.35, 1.35, 0);
+    }
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_color(c_white);
+}

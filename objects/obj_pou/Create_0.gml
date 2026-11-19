@@ -13,6 +13,7 @@ refusing = false;
 head_shake_timer = 0;
 head_shake_x = 0;
 chew_timer = 0;
+manual_override = false;
 
 reaction_sounds = [snd_pou_toque, snd_pou_hablar, snd_pou_pregunta];
 emocion_nombres = ["Normal", "Feliz", "Serio", "Triste", "Hambriento", "Enfermo"];
