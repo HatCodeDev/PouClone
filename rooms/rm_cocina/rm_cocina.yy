@@ -11,10 +11,6 @@
       "path": "rooms/rm_cocina/rm_cocina.yy"
     },
     {
-      "name": "inst_29D41BC1",
-      "path": "rooms/rm_cocina/rm_cocina.yy"
-    },
-    {
       "name": "inst_8486AD2F",
       "path": "rooms/rm_cocina/rm_cocina.yy"
     }
