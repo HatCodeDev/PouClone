@@ -1,6 +1,7 @@
 {
   "FolderOrderSettings":[],
   "ResourceOrderSettings":[
+    {"name":"obj_cocina","order":3,"path":"objects/obj_cocina/obj_cocina.yy",},
     {"name":"rm_bano","order":2,"path":"rooms/rm_bano/rm_bano.yy",},
     {"name":"rm_cocina","order":1,"path":"rooms/rm_cocina/rm_cocina.yy",},
     {"name":"snd_acierto","order":40,"path":"sounds/snd_acierto/snd_acierto.yy",},
