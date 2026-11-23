@@ -30,7 +30,7 @@ food_index = 0;
 bites_total = 3;
 bites_remaining = 3;
 
-// Posiciones
+// Posiciones del plato
 plate_x = 360;
 plate_y = 930;
 food_x = plate_x;
@@ -38,7 +38,7 @@ food_y = plate_y;
 food_target_x = plate_x;
 food_target_y = plate_y;
 
-// Arrastre y animación
+// Arrastre y animación física
 is_dragging = false;
 drag_offset_x = 0;
 drag_offset_y = 0;
@@ -47,6 +47,10 @@ food_scale = 1.3;
 food_punch = 1.0;
 bite_cooldown = 0;
 float_t = 0;
+prev_mouse_x = mouse_x;
+
+// Interfaz de Nevera / Menú de alimentos
+fridge_open = false;
 
 // Partículas de migas / mordisco
 crumbs = [];

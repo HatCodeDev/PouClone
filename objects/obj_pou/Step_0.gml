@@ -49,14 +49,14 @@ if (room == rm_cocina || !manual_override) {
     }
 }
 
-// Toque y caricia a Pou (solo si no se está arrastrando comida en la cocina)
-var _is_food_dragging = false;
+// Toque y caricia a Pou (solo si no se está arrastrando comida ni está la nevera abierta en la cocina)
+var _bloquear_toque = false;
 var _cocina = instance_find(obj_cocina, 0);
-if (_cocina != noone && _cocina.is_dragging) {
-    _is_food_dragging = true;
+if (_cocina != noone && (_cocina.is_dragging || _cocina.fridge_open)) {
+    _bloquear_toque = true;
 }
 
-if (!_is_food_dragging && mouse_check_button_pressed(mb_left)) {
+if (!_bloquear_toque && mouse_check_button_pressed(mb_left)) {
     if (point_in_rectangle(mouse_x, mouse_y, x - 180 * base_scale, y + jump_y - 302 * base_scale, x + 180 * base_scale, y + jump_y)) {
         var _snd = reaction_sounds[irandom(array_length(reaction_sounds) - 1)];
         audio_play_sound(_snd, 1, false);

@@ -1,19 +1,111 @@
-/// @desc Interacción táctil y física de comida (estilo Pou original)
+/// @desc Interacción táctil y física de comida y menú de Nevera (estilo Pou original)
 float_t += 4;
 if (bite_cooldown > 0) bite_cooldown--;
 
-var _current_food = foods[food_index];
 var _pou = instance_find(obj_pou, 0);
 
-// Comprobar clics en botones de la interfaz cuando NO se está arrastrando
+// ========================================================
+// 1. GESTIÓN DEL MENÚ MODAL DE LA NEVERA
+// ========================================================
+if (fridge_open) {
+    // Si se suelta o cancela cualquier arrastre previo
+    is_dragging = false;
+    if (_pou != noone) {
+        _pou.mouth_open = false;
+        _pou.refusing = false;
+    }
+    
+    // Clics dentro del menú de la nevera
+    if (mouse_check_button_pressed(mb_left)) {
+        // Botón cerrar "X" (Esquina superior derecha del modal)
+        if (point_distance(mouse_x, mouse_y, 645, 160) <= 24) {
+            fridge_open = false;
+            audio_play_sound(snd_click, 1, false);
+            exit;
+        }
+        
+        // Botón inferior "Volver a la Cocina"
+        if (point_in_rectangle(mouse_x, mouse_y, 360 - 140, 1060, 360 + 140, 1104)) {
+            fridge_open = false;
+            audio_play_sound(snd_click, 1, false);
+            exit;
+        }
+        
+        // Clic fuera del modal para cerrar
+        if (mouse_x < 30 || mouse_x > 690 || mouse_y < 120 || mouse_y > 1140) {
+            fridge_open = false;
+            audio_play_sound(snd_click, 1, false);
+            exit;
+        }
+        
+        // Cuadrícula de 10 alimentos (2 columnas x 5 filas)
+        for (var _i = 0; _i < array_length(foods); _i++) {
+            var _col = _i mod 2;
+            var _row = floor(_i / 2);
+            var _card_x = (_col == 0) ? 45 : 375;
+            var _card_y = 205 + _row * 168;
+            
+            // Botón "Servir" / "Elegir" (pone la comida en el plato)
+            var _s_x1 = _card_x + 105;
+            var _s_y1 = _card_y + 104;
+            var _s_x2 = _s_x1 + 84;
+            var _s_y2 = _s_y1 + 34;
+            
+            if (point_in_rectangle(mouse_x, mouse_y, _s_x1, _s_y1, _s_x2, _s_y2)) {
+                food_index = _i;
+                bites_remaining = bites_total;
+                food_x = plate_x;
+                food_y = plate_y;
+                food_punch = 1.3;
+                fridge_open = false;
+                audio_play_sound(snd_click, 1, false);
+                exit;
+            }
+            
+            // Botón "+ Comprar"
+            var _b_x1 = _card_x + 196;
+            var _b_y1 = _card_y + 104;
+            var _b_x2 = _b_x1 + 94;
+            var _b_y2 = _b_y1 + 34;
+            
+            if (point_in_rectangle(mouse_x, mouse_y, _b_x1, _b_y1, _b_x2, _b_y2)) {
+                if (global.pou_monedas >= foods[_i].price) {
+                    global.pou_monedas -= foods[_i].price;
+                    foods[_i].count += 1;
+                    global.pou_food_counts[_i] = foods[_i].count;
+                    audio_play_sound(snd_comprar, 1, false);
+                } else {
+                    audio_play_sound(snd_no, 1, false);
+                }
+                exit;
+            }
+        }
+    }
+    
+    // Mientras la nevera esté abierta, no procesar el resto de la cocina
+    exit;
+}
+
+// ========================================================
+// 2. INTERACCIÓN NORMAL EN LA COCINA (Plato, Nevera, Arrastre)
+// ========================================================
+var _current_food = foods[food_index];
+
 if (!is_dragging) {
+    // Abrir Nevera
+    if (mouse_check_button_pressed(mb_left) && point_distance(mouse_x, mouse_y, nevera_x, nevera_y) <= 45) {
+        fridge_open = true;
+        audio_play_sound(snd_click, 1, false);
+        exit;
+    }
+    
     // Flecha izquierda (<)
-    if (mouse_check_button_pressed(mb_left) && point_distance(mouse_x, mouse_y, arrow_left_x, arrow_left_y) <= arrow_radius) {
+    else if (mouse_check_button_pressed(mb_left) && point_distance(mouse_x, mouse_y, arrow_left_x, arrow_left_y) <= arrow_radius) {
         food_index = (food_index - 1 + array_length(foods)) mod array_length(foods);
         bites_remaining = bites_total;
         food_x = plate_x;
         food_y = plate_y;
-        food_punch = 1.3;
+        food_punch = 1.25;
         audio_play_sound(snd_click, 1, false);
     }
     
@@ -23,28 +115,16 @@ if (!is_dragging) {
         bites_remaining = bites_total;
         food_x = plate_x;
         food_y = plate_y;
-        food_punch = 1.3;
+        food_punch = 1.25;
         audio_play_sound(snd_click, 1, false);
     }
     
-    // Botón de Nevera / Tienda rápida
-    else if (mouse_check_button_pressed(mb_left) && point_distance(mouse_x, mouse_y, nevera_x, nevera_y) <= 45) {
-        if (global.pou_monedas >= _current_food.price) {
-            global.pou_monedas -= _current_food.price;
-            _current_food.count++;
-            global.pou_food_counts[food_index] = _current_food.count;
-            audio_play_sound(snd_comprar, 1, false);
-        } else {
-            audio_play_sound(snd_no, 1, false);
-        }
-    }
-    
-    // Botón comprar si se agotó (count == 0)
+    // Botón comprar en plato si se agotó
     else if (_current_food.count <= 0 && mouse_check_button_pressed(mb_left)) {
-        if (point_in_rectangle(mouse_x, mouse_y, plate_x - btn_buy_w * 0.5, plate_y + 45, plate_x + btn_buy_w * 0.5, plate_y + 45 + btn_buy_h)) {
+        if (point_in_rectangle(mouse_x, mouse_y, plate_x - btn_buy_w * 0.5, plate_y + 55, plate_x + btn_buy_w * 0.5, plate_y + 55 + btn_buy_h)) {
             if (global.pou_monedas >= _current_food.price) {
                 global.pou_monedas -= _current_food.price;
-                _current_food.count += 2;
+                _current_food.count += 1;
                 global.pou_food_counts[food_index] = _current_food.count;
                 audio_play_sound(snd_comprar, 1, false);
             } else {
@@ -54,49 +134,49 @@ if (!is_dragging) {
     }
     
     // Iniciar arrastre de la comida si hay stock
-    else if (_current_food.count > 0 && mouse_check_button_pressed(mb_left) && point_distance(mouse_x, mouse_y, food_x, food_y) <= 60) {
+    else if (_current_food.count > 0 && mouse_check_button_pressed(mb_left) && point_distance(mouse_x, mouse_y, food_x, food_y) <= 65) {
         is_dragging = true;
         drag_offset_x = food_x - mouse_x;
         drag_offset_y = food_y - mouse_y;
+        prev_mouse_x = mouse_x;
         audio_play_sound(snd_pou_toque, 1, false);
     }
 }
 
-// Lógica durante el arrastre
+// Lógica durante el arrastre con ratón/cursor
 if (is_dragging) {
-    var _prev_x = food_x;
-    food_target_x = mouse_x + drag_offset_x;
-    food_target_y = mouse_y + drag_offset_y;
+    // Seguimiento inmediato y directo del cursor (sin retraso que cause jitter)
+    food_x = mouse_x + drag_offset_x;
+    food_y = mouse_y + drag_offset_y;
     
-    // Movimiento fluido que responde a la posición del puntero/dedo
-    food_x = lerp(food_x, food_target_x, 0.7);
-    food_y = lerp(food_y, food_target_y, 0.7);
-    food_angle = clamp((food_x - _prev_x) * -2.0, -25, 25);
+    // Inclinación suave según la velocidad horizontal del ratón
+    var _dx = mouse_x - prev_mouse_x;
+    food_angle = lerp(food_angle, clamp(_dx * -1.2, -20, 20), 0.35);
+    prev_mouse_x = mouse_x;
     
     if (_pou != noone) {
-        // Coordenadas de la boca de Pou
-        var _mouth_x = _pou.x + _pou.head_shake_x;
-        var _mouth_y = _pou.y + _pou.jump_y - 182;
+        // Coordenadas fijas y estables de la boca de Pou (sin verse afectadas por head_shake_x)
+        var _mouth_x = _pou.x;
+        var _mouth_y = _pou.y - 182;
         var _dist = point_distance(food_x, food_y, _mouth_x, _mouth_y);
         
-        // Zona de anticipación: Pou abre la boca con el sonido "¡oh!"
-        if (_dist < 210) {
-            if (global.pou_hambre < 100) {
-                if (!_pou.mouth_open) {
+        // Zona de anticipación con histéresis estable (abre a < 190, cierra a > 230)
+        if (_pou.mouth_open || _pou.refusing) {
+            if (_dist > 230) {
+                _pou.mouth_open = false;
+                _pou.refusing = false;
+            }
+        } else {
+            if (_dist < 190) {
+                if (global.pou_hambre < 100) {
                     _pou.mouth_open = true;
                     audio_play_sound(snd_pou_boca, 2, false);
-                }
-            } else {
-                // Pou lleno rechaza: dice "No" y sacude la cabeza
-                if (!_pou.refusing) {
+                } else {
                     _pou.refusing = true;
-                    _pou.head_shake_timer = 30;
+                    _pou.head_shake_timer = 25;
                     audio_play_sound(snd_no, 2, false);
                 }
             }
-        } else {
-            _pou.mouth_open = false;
-            _pou.refusing = false;
         }
         
         // Zona de mordisco (contacto directo con la boca)
@@ -108,12 +188,11 @@ if (is_dragging) {
                 }
             } else if (bite_cooldown <= 0) {
                 // Dar mordisco
-                bite_cooldown = 22;
+                bite_cooldown = 24;
                 bites_remaining--;
-                food_punch = 1.4;
+                food_punch = 1.3;
                 
-                // Animación de masticar y squash en Pou
-                _pou.squash_t = 0.9;
+                // Animación de masticar suave en Pou (sin activar squash violento)
                 _pou.chew_timer = 20;
                 
                 // Sonido de mordisco o bebida
@@ -125,18 +204,18 @@ if (is_dragging) {
                 }
                 
                 // Generar migas / partículas
-                for (var _k = 0; _k < 12; _k++) {
+                for (var _k = 0; _k < 10; _k++) {
                     var _col_idx = irandom(array_length(_current_food.crumbs) - 1);
                     var _c_col = _current_food.crumbs[_col_idx];
                     array_push(crumbs, {
-                        x: _mouth_x + random_range(-15, 15),
-                        y: _mouth_y + random_range(-10, 10),
-                        vx: random_range(-4, 4),
-                        vy: random_range(-5, 0),
+                        x: _mouth_x + random_range(-12, 12),
+                        y: _mouth_y + random_range(-8, 8),
+                        vx: random_range(-3.5, 3.5),
+                        vy: random_range(-4, 0),
                         col: _c_col,
-                        radius: random_range(3, 6),
+                        radius: random_range(3, 5),
                         alpha: 1.0,
-                        life: irandom_range(25, 40)
+                        life: irandom_range(20, 35)
                     });
                 }
                 
@@ -161,7 +240,7 @@ if (is_dragging) {
                     
                     food_x = plate_x;
                     food_y = plate_y;
-                    food_punch = 1.3;
+                    food_punch = 1.25;
                 }
             }
         }
@@ -176,15 +255,15 @@ if (is_dragging) {
         }
     }
 } else {
-    // Retorno suave y flotación en el plato
+    // Retorno suave y flotación sutil en el plato
     var _float_offset = dsin(float_t) * 3;
-    food_x = lerp(food_x, plate_x, 0.2);
-    food_y = lerp(food_y, plate_y + _float_offset, 0.2);
-    food_angle = lerp(food_angle, 0, 0.2);
+    food_x = lerp(food_x, plate_x, 0.25);
+    food_y = lerp(food_y, plate_y + _float_offset, 0.25);
+    food_angle = lerp(food_angle, 0, 0.25);
 }
 
 // Reducción del punch de escala
-food_punch = max(1.0, food_punch - 0.04);
+food_punch = max(1.0, food_punch - 0.03);
 
 // Actualizar partículas de migas
 for (var _i = array_length(crumbs) - 1; _i >= 0; _i--) {
@@ -193,7 +272,7 @@ for (var _i = array_length(crumbs) - 1; _i >= 0; _i--) {
     _c.y += _c.vy;
     _c.vy += 0.35; // Gravedad
     _c.life--;
-    _c.alpha = _c.life / 30;
+    _c.alpha = _c.life / 25;
     if (_c.life <= 0) {
         array_delete(crumbs, _i, 1);
     }
