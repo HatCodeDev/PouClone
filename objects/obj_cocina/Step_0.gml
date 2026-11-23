@@ -2,6 +2,9 @@
 float_t += 4;
 if (bite_cooldown > 0) bite_cooldown--;
 
+// Manejo dinámico de profundidad para que el orden de renderizado sea siempre perfecto
+depth = fridge_open ? -1000 : (is_dragging ? -100 : 10);
+
 var _pou = instance_find(obj_pou, 0);
 
 // ========================================================
@@ -18,21 +21,21 @@ if (fridge_open) {
     // Clics dentro del menú de la nevera
     if (mouse_check_button_pressed(mb_left)) {
         // Botón cerrar "X" (Esquina superior derecha del modal)
-        if (point_distance(mouse_x, mouse_y, 645, 160) <= 24) {
+        if (point_distance(mouse_x, mouse_y, 652, 65) <= 28) {
             fridge_open = false;
             audio_play_sound(snd_click, 1, false);
             exit;
         }
         
         // Botón inferior "Volver a la Cocina"
-        if (point_in_rectangle(mouse_x, mouse_y, 360 - 140, 1060, 360 + 140, 1104)) {
+        if (point_in_rectangle(mouse_x, mouse_y, 360 - 160, 1150, 360 + 160, 1204)) {
             fridge_open = false;
             audio_play_sound(snd_click, 1, false);
             exit;
         }
         
         // Clic fuera del modal para cerrar
-        if (mouse_x < 30 || mouse_x > 690 || mouse_y < 120 || mouse_y > 1140) {
+        if (mouse_x < 20 || mouse_x > 700 || mouse_y < 20 || mouse_y > 1240) {
             fridge_open = false;
             audio_play_sound(snd_click, 1, false);
             exit;
@@ -42,14 +45,14 @@ if (fridge_open) {
         for (var _i = 0; _i < array_length(foods); _i++) {
             var _col = _i mod 2;
             var _row = floor(_i / 2);
-            var _card_x = (_col == 0) ? 45 : 375;
-            var _card_y = 205 + _row * 168;
+            var _card_x = (_col == 0) ? 35 : 365;
+            var _card_y = 115 + _row * 195;
             
             // Botón "Servir" / "Elegir" (pone la comida en el plato)
-            var _s_x1 = _card_x + 105;
-            var _s_y1 = _card_y + 104;
-            var _s_x2 = _s_x1 + 84;
-            var _s_y2 = _s_y1 + 34;
+            var _s_x1 = _card_x + 112;
+            var _s_y1 = _card_y + 118;
+            var _s_x2 = _s_x1 + 92;
+            var _s_y2 = _s_y1 + 40;
             
             if (point_in_rectangle(mouse_x, mouse_y, _s_x1, _s_y1, _s_x2, _s_y2)) {
                 food_index = _i;
@@ -63,10 +66,10 @@ if (fridge_open) {
             }
             
             // Botón "+ Comprar"
-            var _b_x1 = _card_x + 196;
-            var _b_y1 = _card_y + 104;
-            var _b_x2 = _b_x1 + 94;
-            var _b_y2 = _b_y1 + 34;
+            var _b_x1 = _card_x + 212;
+            var _b_y1 = _card_y + 118;
+            var _b_x2 = _b_x1 + 96;
+            var _b_y2 = _b_y1 + 40;
             
             if (point_in_rectangle(mouse_x, mouse_y, _b_x1, _b_y1, _b_x2, _b_y2)) {
                 if (global.pou_monedas >= foods[_i].price) {

@@ -1,12 +1,12 @@
 /// @desc Gestión e interacción de comida en la Cocina (estilo Pou original)
 
-// Lista de comidas disponibles con todas sus propiedades
+// Lista de comidas disponibles con todas sus propiedades (ASCII seguro para GameMaker)
 foods = [
     { name: "Manzana",      sprite: spr_food_apple,      nutrition: 20, is_drink: false, count: 5, price: 10, crumbs: [c_red, c_white, c_yellow] },
-    { name: "Plátano",      sprite: spr_food_banana,     nutrition: 22, is_drink: false, count: 4, price: 12, crumbs: [c_yellow, c_white] },
+    { name: "Platano",      sprite: spr_food_banana,     nutrition: 22, is_drink: false, count: 4, price: 12, crumbs: [c_yellow, c_white] },
     { name: "Cerezas",      sprite: spr_food_cherries,   nutrition: 15, is_drink: false, count: 6, price: 8,  crumbs: [c_maroon, c_red] },
     { name: "Zanahoria",    sprite: spr_food_carrot,     nutrition: 18, is_drink: false, count: 5, price: 10, crumbs: [c_orange, c_lime] },
-    { name: "Brócoli",      sprite: spr_food_broccoli,   nutrition: 25, is_drink: false, count: 3, price: 15, crumbs: [c_green, c_lime] },
+    { name: "Brocoli",      sprite: spr_food_broccoli,   nutrition: 25, is_drink: false, count: 3, price: 15, crumbs: [c_green, c_lime] },
     { name: "Hamburguesa",  sprite: spr_food_burger,     nutrition: 40, is_drink: false, count: 2, price: 25, crumbs: [c_orange, c_yellow, c_maroon] },
     { name: "Pollo",        sprite: spr_food_chicken,    nutrition: 35, is_drink: false, count: 3, price: 20, crumbs: [c_orange, c_yellow] },
     { name: "Dona",         sprite: spr_food_donut,      nutrition: 20, is_drink: false, count: 4, price: 12, crumbs: [c_fuchsia, c_aqua, c_yellow] },
@@ -51,6 +51,7 @@ prev_mouse_x = mouse_x;
 
 // Interfaz de Nevera / Menú de alimentos
 fridge_open = false;
+depth = 10;
 
 // Partículas de migas / mordisco
 crumbs = [];

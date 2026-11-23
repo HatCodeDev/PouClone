@@ -1,4 +1,11 @@
 /// @description Dibujo de Pou, sombra, respiración, masticación y botones de emociones en la sala
+
+// Si la nevera está abierta en la cocina, ocultar a Pou para que no se encime en el menú
+var _cocina = instance_find(obj_cocina, 0);
+if (_cocina != noone && _cocina.fridge_open) {
+    exit;
+}
+
 var _breath = dsin(bob_t) * 0.03;
 
 // Reacción suave al toque (un solo arco suave de compresión y rebote, sin vibración)

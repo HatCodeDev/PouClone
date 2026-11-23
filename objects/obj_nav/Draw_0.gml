@@ -1,4 +1,11 @@
 /// @desc Dibuja las puertas, título del cuarto y HUD superior de estadísticas al estilo Pou
+
+// Si la nevera está abierta en la cocina, ocultar el HUD y puertas para no encimarse con el modal
+var _cocina = instance_find(obj_cocina, 0);
+if (_cocina != noone && _cocina.fridge_open) {
+    exit;
+}
+
 var _hh = sprite_get_height(spr_puerta) * door_scale * 0.5;
 
 // Paleta de colores original de Pou
