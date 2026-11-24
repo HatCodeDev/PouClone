@@ -43,7 +43,8 @@ for (var _i = 0; _i < 6; _i++) {
 }
 
 // Botones de cambio de estado ÚNICAMENTE en la sala (rm_sala)
-if (room == rm_sala && mouse_check_button_pressed(mb_left)) {
+var _sala_inst = instance_find(obj_sala, 0);
+if (room == rm_sala && mouse_check_button_pressed(mb_left) && (_sala_inst == noone || !_sala_inst.games_menu_open)) {
     for (var _i = 0; _i < 6; _i++) {
         var _bx = 40 + (_i mod 3) * 220;
         var _by = 850 + floor(_i / 3) * 80;
@@ -110,6 +111,9 @@ if (_bano_inst != noone && _bano_inst.is_dragging) {
     _bloquear_toque = true;
 }
 if (_dorm_inst != noone && _dorm_inst.closet_open) {
+    _bloquear_toque = true;
+}
+if (_sala_inst != noone && _sala_inst.games_menu_open) {
     _bloquear_toque = true;
 }
 

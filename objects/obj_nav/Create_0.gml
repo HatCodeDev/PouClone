@@ -39,6 +39,11 @@ switch (room) {
             instance_create_layer(0, 0, "Instances", obj_bano);
         }
         break;
+    case rm_sala:
+        if (!instance_exists(obj_sala)) {
+            instance_create_layer(0, 0, "Instances", obj_sala);
+        }
+        break;
 }
 
 // La room conserva 720x1280; la ventana de escritorio se ajusta a la pantalla.

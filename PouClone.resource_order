@@ -4,6 +4,7 @@
     {"name":"obj_bano","order":4,"path":"objects/obj_bano/obj_bano.yy",},
     {"name":"obj_cocina","order":3,"path":"objects/obj_cocina/obj_cocina.yy",},
     {"name":"obj_dormitorio","order":5,"path":"objects/obj_dormitorio/obj_dormitorio.yy",},
+    {"name":"obj_sala","order":7,"path":"objects/obj_sala/obj_sala.yy",},
     {"name":"rm_bano","order":2,"path":"rooms/rm_bano/rm_bano.yy",},
     {"name":"rm_cocina","order":1,"path":"rooms/rm_cocina/rm_cocina.yy",},
     {"name":"rm_dormitorio","order":6,"path":"rooms/rm_dormitorio/rm_dormitorio.yy",},

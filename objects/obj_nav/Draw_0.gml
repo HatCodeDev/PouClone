@@ -8,6 +8,10 @@ var _dorm = instance_find(obj_dormitorio, 0);
 if (_dorm != noone && _dorm.closet_open) {
     exit;
 }
+var _sala = instance_find(obj_sala, 0);
+if (_sala != noone && _sala.games_menu_open) {
+    exit;
+}
 
 // Paleta de colores original de Pou
 var _c_pou_text   = make_color_rgb(52, 36, 20);   // Marrón oscuro del contorno y textos de Pou

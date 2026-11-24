@@ -1,12 +1,16 @@
 /// @description Dibujo de Pou, sombra, respiración, masticación y botones de emociones en la sala
 
-// Si la nevera está abierta en la cocina o el armario en el dormitorio, ocultar a Pou
+// Si la nevera está abierta en la cocina, el armario en el dormitorio o el menú de juegos en la sala, ocultar a Pou
 var _cocina = instance_find(obj_cocina, 0);
 if (_cocina != noone && _cocina.fridge_open) {
     exit;
 }
 var _dorm = instance_find(obj_dormitorio, 0);
 if (_dorm != noone && _dorm.closet_open) {
+    exit;
+}
+var _sala = instance_find(obj_sala, 0);
+if (_sala != noone && _sala.games_menu_open) {
     exit;
 }
 

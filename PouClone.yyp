@@ -30,6 +30,7 @@
     {"id":{"name":"obj_dormitorio","path":"objects/obj_dormitorio/obj_dormitorio.yy",},},
     {"id":{"name":"obj_nav","path":"objects/obj_nav/obj_nav.yy",},},
     {"id":{"name":"obj_pou","path":"objects/obj_pou/obj_pou.yy",},},
+    {"id":{"name":"obj_sala","path":"objects/obj_sala/obj_sala.yy",},},
     {"id":{"name":"rm_bano","path":"rooms/rm_bano/rm_bano.yy",},},
     {"id":{"name":"rm_cocina","path":"rooms/rm_cocina/rm_cocina.yy",},},
     {"id":{"name":"rm_dormitorio","path":"rooms/rm_dormitorio/rm_dormitorio.yy",},},

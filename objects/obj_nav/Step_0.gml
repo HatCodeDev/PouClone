@@ -9,6 +9,10 @@ var _dorm = instance_find(obj_dormitorio, 0);
 if (_dorm != noone && _dorm.closet_open) {
     exit;
 }
+var _sala = instance_find(obj_sala, 0);
+if (_sala != noone && _sala.games_menu_open) {
+    exit;
+}
 
 if (mouse_check_button_pressed(mb_left)) {
     // Flecha izquierda (<): Habitación anterior
