@@ -1,12 +1,13 @@
-/// @desc Dibuja las puertas, título del cuarto y HUD superior de estadísticas al estilo Pou
-
-// Si la nevera está abierta en la cocina, ocultar el HUD y puertas para no encimarse con el modal
+/// @desc Dibuja flechas superiores de navegación, título del cuarto y HUD superior de estadísticas
+// Si la nevera está abierta en la cocina o el armario en el dormitorio, ocultar el HUD para no encimarse
 var _cocina = instance_find(obj_cocina, 0);
 if (_cocina != noone && _cocina.fridge_open) {
     exit;
 }
-
-var _hh = sprite_get_height(spr_puerta) * door_scale * 0.5;
+var _dorm = instance_find(obj_dormitorio, 0);
+if (_dorm != noone && _dorm.closet_open) {
+    exit;
+}
 
 // Paleta de colores original de Pou
 var _c_pou_text   = make_color_rgb(52, 36, 20);   // Marrón oscuro del contorno y textos de Pou
@@ -15,7 +16,7 @@ var _c_pou_pill   = make_color_rgb(255, 250, 238); // Fondo crema cálido
 var _c_pou_shadow = make_color_rgb(215, 205, 185); // Sombra suave de pastillas
 
 // ========================================================
-// 1. FILA SUPERIOR (y: 18 a 60): Título de sala y Monedas
+// 1. FILA SUPERIOR (y: 18 a 60): Navegación con Flechas, Título y Monedas
 // ========================================================
 
 // 1.1 Pastilla del Título de Sala (Centrada en x = 360)
@@ -36,13 +37,39 @@ draw_roundrect(_tx1, _ty1, _tx2, _ty2, false);
 draw_set_color(_c_pou_border);
 draw_roundrect(_tx1, _ty1, _tx2, _ty2, true);
 
-// Texto del título
+// Texto del título (Dibuja "Baño" con tilde ASCII '~' sobre la 'n')
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 draw_set_color(_c_pou_text);
-draw_text_transformed(room_width * 0.5, _ty1 + _title_h * 0.5, room_title, 1.6, 1.6, 0);
+if (room_title == "Bano") {
+    draw_text_transformed(room_width * 0.5, _ty1 + _title_h * 0.5, "Bano", 1.5, 1.5, 0);
+    draw_text_transformed(room_width * 0.5 + 4, _ty1 + _title_h * 0.5 - 13, "~", 1.3, 1.3, 0);
+} else {
+    draw_text_transformed(room_width * 0.5, _ty1 + _title_h * 0.5, room_title, 1.5, 1.5, 0);
+}
 
-// 1.2 Pastilla de Monedas (Esquina superior derecha)
+// 1.2 Flechas de Navegación de Cuartos (< y >) estilo Pou original
+var _h_left = point_distance(mouse_x, mouse_y, arrow_l_x, arrow_y) <= arrow_radius + 4;
+draw_set_color(_c_pou_shadow);
+draw_circle(arrow_l_x, arrow_y + 2, arrow_radius, false);
+draw_set_color(_h_left ? make_color_rgb(242, 232, 215) : _c_pou_pill);
+draw_circle(arrow_l_x, arrow_y, arrow_radius, false);
+draw_set_color(_c_pou_border);
+draw_circle(arrow_l_x, arrow_y, arrow_radius, true);
+draw_set_color(_c_pou_text);
+draw_text_transformed(arrow_l_x - 1, arrow_y, "<", 2.0, 2.0, 0);
+
+var _h_right = point_distance(mouse_x, mouse_y, arrow_r_x, arrow_y) <= arrow_radius + 4;
+draw_set_color(_c_pou_shadow);
+draw_circle(arrow_r_x, arrow_y + 2, arrow_radius, false);
+draw_set_color(_h_right ? make_color_rgb(242, 232, 215) : _c_pou_pill);
+draw_circle(arrow_r_x, arrow_y, arrow_radius, false);
+draw_set_color(_c_pou_border);
+draw_circle(arrow_r_x, arrow_y, arrow_radius, true);
+draw_set_color(_c_pou_text);
+draw_text_transformed(arrow_r_x + 1, arrow_y, ">", 2.0, 2.0, 0);
+
+// 1.3 Pastilla de Monedas (Esquina superior derecha)
 var _coin_w = 145;
 var _coin_h = 42;
 var _cx1 = room_width - _coin_w - 20;
@@ -69,7 +96,6 @@ draw_text_transformed(_cx1 + 46, _cy1 + _coin_h * 0.5, string(global.pou_monedas
 
 // ========================================================
 // 2. FILA DE ESTADOS (y: 82 a 160): Hambre, Salud, Diversión, Energía
-// Separada verticalmente para que NUNCA choque con el título
 // ========================================================
 var _hud_items = [
     { icon: spr_estado_hambre,    val: global.pou_hambre,    x: 90 },
@@ -116,41 +142,6 @@ for (var _k = 0; _k < 4; _k++) {
     draw_set_valign(fa_top);
     draw_set_color(_c_pou_text);
     draw_text_transformed(_ix, _bar_y + _bar_h + 3, string(round(_item.val)) + "%", 1.05, 1.05, 0);
-}
-
-// ========================================================
-// 3. PUERTAS DE NAVEGACIÓN INFERIORES
-// Con pastilla contenedora en color Pou para máxima legibilidad
-// ========================================================
-draw_set_halign(fa_center);
-draw_set_valign(fa_middle);
-
-for (var _i = 0; _i < array_length(doors); _i++) {
-    var _d = doors[_i];
-    var _col = (hover == _i) ? c_white : c_ltgray;
-    draw_sprite_ext(spr_puerta, 0, _d.x, _d.y, door_scale, door_scale, 0, _col, 1);
-    
-    // Pastilla con nombre del cuarto debajo de la puerta
-    var _lbl_w = string_width(_d.label) * 1.3 + 28;
-    var _lbl_h = 32;
-    var _lx1 = _d.x - _lbl_w * 0.5;
-    var _ly1 = _d.y + _hh + 8;
-    var _lx2 = _lx1 + _lbl_w;
-    var _ly2 = _ly1 + _lbl_h;
-    
-    // Sombra
-    draw_set_color(_c_pou_shadow);
-    draw_roundrect(_lx1, _ly1 + 2, _lx2, _ly2 + 2, false);
-    // Fondo crema
-    draw_set_color(_c_pou_pill);
-    draw_roundrect(_lx1, _ly1, _lx2, _ly2, false);
-    // Borde marrón
-    draw_set_color(_c_pou_border);
-    draw_roundrect(_lx1, _ly1, _lx2, _ly2, true);
-    
-    // Texto de la puerta en color Pou
-    draw_set_color(_c_pou_text);
-    draw_text_transformed(_d.x, _ly1 + _lbl_h * 0.5, _d.label, 1.25, 1.25, 0);
 }
 
 draw_set_halign(fa_left);

@@ -1,22 +1,26 @@
-/// @desc Detecta hover y clic en las puertas
-hover = -1;
+/// @desc Navegación por flechas superiores (< y >) para cambiar de habitación
 
-// Si la nevera está abierta en la cocina, ignorar clics en las puertas de fondo
+// Si la nevera está abierta en la cocina o el armario en el dormitorio, ignorar clics
 var _cocina = instance_find(obj_cocina, 0);
 if (_cocina != noone && _cocina.fridge_open) {
     exit;
 }
+var _dorm = instance_find(obj_dormitorio, 0);
+if (_dorm != noone && _dorm.closet_open) {
+    exit;
+}
 
-var _hw = sprite_get_width(spr_puerta) * door_scale * 0.5;
-var _hh = sprite_get_height(spr_puerta) * door_scale * 0.5;
-
-for (var _i = 0; _i < array_length(doors); _i++) {
-    var _d = doors[_i];
-    if (point_in_rectangle(mouse_x, mouse_y, _d.x - _hw, _d.y - _hh, _d.x + _hw, _d.y + _hh)) {
-        hover = _i;
-        if (mouse_check_button_pressed(mb_left)) {
-            audio_play_sound(snd_click, 1, false);
-            room_goto(_d.target);
-        }
+if (mouse_check_button_pressed(mb_left)) {
+    // Flecha izquierda (<): Habitación anterior
+    if (point_distance(mouse_x, mouse_y, arrow_l_x, arrow_y) <= arrow_radius + 6) {
+        audio_play_sound(snd_click, 1, false);
+        var _prev_idx = (current_room_index - 1 + array_length(rooms_list)) mod array_length(rooms_list);
+        room_goto(rooms_list[_prev_idx].target);
+    }
+    // Flecha derecha (>): Siguiente habitación
+    else if (point_distance(mouse_x, mouse_y, arrow_r_x, arrow_y) <= arrow_radius + 6) {
+        audio_play_sound(snd_click, 1, false);
+        var _next_idx = (current_room_index + 1) mod array_length(rooms_list);
+        room_goto(rooms_list[_next_idx].target);
     }
 }

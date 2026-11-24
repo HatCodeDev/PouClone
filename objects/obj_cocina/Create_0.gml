@@ -30,9 +30,9 @@ food_index = 0;
 bites_total = 3;
 bites_remaining = 3;
 
-// Posiciones del plato
-plate_x = 360;
-plate_y = 930;
+// Posiciones del plato y la comida (en la parte inferior)
+plate_x = 410;
+plate_y = 1075;
 food_x = plate_x;
 food_y = plate_y;
 food_target_x = plate_x;
@@ -56,15 +56,16 @@ depth = 10;
 // Partículas de migas / mordisco
 crumbs = [];
 
-// Botones UI
-arrow_left_x = 180;
-arrow_left_y = 930;
+// Botones UI de navegación de comida
+arrow_left_x = 280;
+arrow_left_y = 1075;
 arrow_right_x = 540;
-arrow_right_y = 930;
-arrow_radius = 35;
+arrow_right_y = 1075;
+arrow_radius = 32;
 
-nevera_x = 640;
-nevera_y = 930;
+// Nevera en la parte inferior izquierda (donde antes iba la puerta)
+nevera_x = 125;
+nevera_y = 1095;
 
 btn_buy_w = 160;
 btn_buy_h = 42;

@@ -1,8 +1,12 @@
 /// @description Dibujo de Pou, sombra, respiración, masticación y botones de emociones en la sala
 
-// Si la nevera está abierta en la cocina, ocultar a Pou para que no se encime en el menú
+// Si la nevera está abierta en la cocina o el armario en el dormitorio, ocultar a Pou
 var _cocina = instance_find(obj_cocina, 0);
 if (_cocina != noone && _cocina.fridge_open) {
+    exit;
+}
+var _dorm = instance_find(obj_dormitorio, 0);
+if (_dorm != noone && _dorm.closet_open) {
     exit;
 }
 
@@ -57,6 +61,26 @@ if (global.pou_suciedad > 0 && variable_global_exists("pou_dirt_spots")) {
     }
     draw_set_alpha(1);
     draw_set_color(c_white);
+}
+
+// Ojos cerrados si está durmiendo con la lámpara apagada en el dormitorio
+if (room == rm_dormitorio && variable_global_exists("pou_lamp_on") && !global.pou_lamp_on) {
+    var _px = x + head_shake_x;
+    var _py = y + jump_y;
+    var _eye_y = _py - 192 * (_sy / base_scale);
+    draw_set_color(make_color_rgb(52, 36, 20));
+    // Curvas suaves de párpados cerrados
+    draw_line_width(_px - 72, _eye_y, _px - 22, _eye_y, 5);
+    draw_line_width(_px + 22, _eye_y, _px + 72, _eye_y, 5);
+    draw_set_color(c_white);
+}
+
+// Dibujo de Accesorios equipados (Lentes y Sombrero)
+if (variable_global_exists("pou_lentes") && global.pou_lentes != -1) {
+    draw_sprite_ext(global.pou_lentes, 0, x + head_shake_x, y + jump_y - 192 * (_sy / base_scale), _sx * 1.15, _sy * 1.15, 0, c_white, 1);
+}
+if (variable_global_exists("pou_sombrero") && global.pou_sombrero != -1) {
+    draw_sprite_ext(global.pou_sombrero, 0, x + head_shake_x, y + jump_y - 308 * (_sy / base_scale), _sx * 1.15, _sy * 1.15, 0, c_white, 1);
 }
 
 // Dibujar los botones de cambio de emoción ÚNICAMENTE en la sala (rm_sala)

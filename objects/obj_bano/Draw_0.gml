@@ -60,11 +60,11 @@ draw_set_color(_c_pou_text);
 draw_text_transformed(ducha_home_x, ducha_home_y + 56 + _lh * 0.5, "Ducha", 1.1, 1.1, 0);
 
 // ========================================================
-// 2. BOTÓN "¡ENSUCIAR!" (Lado derecho inferior)
+// 2. BOTÓN "¡ENSUCIAR!" (Centrado en la parte inferior)
 // ========================================================
-var _bx1 = 480;
+var _bx1 = 280;
 var _by1 = 1115;
-var _bx2 = 660;
+var _bx2 = 440;
 var _by2 = 1165;
 var _h_ens = point_in_rectangle(mouse_x, mouse_y, _bx1, _by1, _bx2, _by2);
 

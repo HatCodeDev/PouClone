@@ -30,8 +30,8 @@ if (!is_dragging) {
             ducha_drag_oy = ducha_y - mouse_y;
             audio_play_sound(snd_pou_toque, 1, false);
         }
-        // Botón "¡Ensuciar!" (Permite probar el baño de nuevo)
-        else if (point_in_rectangle(mouse_x, mouse_y, 480, 1115, 660, 1165)) {
+        // Botón "¡Ensuciar!" (Permite probar el baño de nuevo, centrado en x: 360)
+        else if (point_in_rectangle(mouse_x, mouse_y, 280, 1115, 440, 1165)) {
             global.pou_suciedad = 100;
             if (variable_global_exists("pou_dirt_spots")) {
                 for (var _i = 0; _i < array_length(global.pou_dirt_spots); _i++) {

@@ -1,9 +1,9 @@
 /// @desc Inicialización del cuarto de Baño / Ducha (Jabón, Ducha, Espuma, Agua y Limpieza)
 depth = -50;
 
-// Estado del Jabón
-jabon_home_x = 200;
-jabon_home_y = 1000;
+// Estado del Jabón (Ubicado en la parte inferior izquierda)
+jabon_home_x = 180;
+jabon_home_y = 1110;
 jabon_x = jabon_home_x;
 jabon_y = jabon_home_y;
 jabon_dragging = false;
@@ -14,9 +14,9 @@ jabon_angle = 0;
 prev_mouse_x = mouse_x;
 prev_mouse_y = mouse_y;
 
-// Estado de la Ducha
-ducha_home_x = 520;
-ducha_home_y = 995;
+// Estado de la Ducha (Ubicada en la parte inferior derecha)
+ducha_home_x = 540;
+ducha_home_y = 1110;
 ducha_x = ducha_home_x;
 ducha_y = ducha_home_y;
 ducha_dragging = false;
