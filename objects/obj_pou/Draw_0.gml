@@ -67,20 +67,31 @@ if (global.pou_suciedad > 0 && variable_global_exists("pou_dirt_spots")) {
 if (room == rm_dormitorio && variable_global_exists("pou_lamp_on") && !global.pou_lamp_on) {
     var _px = x + head_shake_x;
     var _py = y + jump_y;
-    var _eye_y = _py - 192 * (_sy / base_scale);
+    var _eye_y = _py - 228 * (_sy / base_scale);
     draw_set_color(make_color_rgb(52, 36, 20));
-    // Curvas suaves de párpados cerrados
-    draw_line_width(_px - 72, _eye_y, _px - 22, _eye_y, 5);
-    draw_line_width(_px + 22, _eye_y, _px + 72, _eye_y, 5);
+    // Curvas suaves de párpados cerrados sobre los ojos reales de Pou
+    draw_line_width(_px - 46, _eye_y, _px - 8, _eye_y, 4.5);
+    draw_line_width(_px + 8, _eye_y, _px + 46, _eye_y, 4.5);
     draw_set_color(c_white);
 }
 
-// Dibujo de Accesorios equipados (Lentes y Sombrero)
+// Dibujo de Accesorios equipados (Lentes y Sombrero) optimizados al tamaño de Pou
 if (variable_global_exists("pou_lentes") && global.pou_lentes != -1) {
-    draw_sprite_ext(global.pou_lentes, 0, x + head_shake_x, y + jump_y - 192 * (_sy / base_scale), _sx * 1.15, _sy * 1.15, 0, c_white, 1);
+    // Lentes centrados con precisión milimétrica sobre las cuencas oculares de Pou
+    draw_sprite_ext(global.pou_lentes, 0, x + head_shake_x, y + jump_y - 228 * (_sy / base_scale), _sx * 0.70, _sy * 0.70, 0, c_white, 1);
 }
 if (variable_global_exists("pou_sombrero") && global.pou_sombrero != -1) {
-    draw_sprite_ext(global.pou_sombrero, 0, x + head_shake_x, y + jump_y - 308 * (_sy / base_scale), _sx * 1.15, _sy * 1.15, 0, c_white, 1);
+    // Ajuste individual de altura y proporción según el modelo del sombrero
+    var _hat_y_off = 332;
+    var _hat_scale = 0.75;
+    if (global.pou_sombrero == spr_sombrero_bruja) {
+        _hat_y_off = 358;
+        _hat_scale = 0.80;
+    } else if (global.pou_sombrero == spr_sombrero_negro) {
+        _hat_y_off = 345;
+        _hat_scale = 0.78;
+    }
+    draw_sprite_ext(global.pou_sombrero, 0, x + head_shake_x, y + jump_y - _hat_y_off * (_sy / base_scale), _sx * _hat_scale, _sy * _hat_scale, 0, c_white, 1);
 }
 
 // Dibujar los botones de cambio de emoción ÚNICAMENTE en la sala (rm_sala)

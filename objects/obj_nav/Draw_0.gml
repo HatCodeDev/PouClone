@@ -95,7 +95,8 @@ draw_set_color(_c_pou_text);
 draw_text_transformed(_cx1 + 46, _cy1 + _coin_h * 0.5, string(global.pou_monedas), 1.4, 1.4, 0);
 
 // ========================================================
-// 2. FILA DE ESTADOS (y: 82 a 160): Hambre, Salud, Diversión, Energía
+// 2. FILA DE ESTADOS (y: 110 a 195): Hambre, Salud, Diversión, Energía
+// Posicionada más abajo con espacio holgado para no verse encimada
 // ========================================================
 var _hud_items = [
     { icon: spr_estado_hambre,    val: global.pou_hambre,    x: 90 },
@@ -105,15 +106,16 @@ var _hud_items = [
 ];
 
 var _bar_w = 84;
-var _bar_h = 12;
-var _bar_y = 126;
+var _bar_h = 13;
+var _icon_y = 120;
+var _bar_y = 154;
 
 for (var _k = 0; _k < 4; _k++) {
     var _item = _hud_items[_k];
     var _ix = _item.x;
     
     // Icono del estado centrado
-    draw_sprite_ext(_item.icon, 0, _ix, 92, 0.72, 0.72, 0, c_white, 1);
+    draw_sprite_ext(_item.icon, 0, _ix, _icon_y, 0.72, 0.72, 0, c_white, 1);
     
     // Fondo oscuro de la barra
     draw_set_color(make_color_rgb(45, 40, 35));

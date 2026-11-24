@@ -182,7 +182,8 @@ if (closet_open) {
         
         // Sprite o icono
         if (_it.sprite != -1) {
-            draw_sprite_ext(_it.sprite, 0, _card_x + _card_w * 0.5, _card_y + 75, 0.9, 0.9, 0, c_white, 1);
+            var _preview_scale = (closet_tab == 1) ? 0.65 : 0.72;
+            draw_sprite_ext(_it.sprite, 0, _card_x + _card_w * 0.5, _card_y + 75, _preview_scale, _preview_scale, 0, c_white, 1);
         } else {
             draw_set_color(make_color_rgb(180, 180, 180));
             draw_circle(_card_x + _card_w * 0.5, _card_y + 75, 28, true);
