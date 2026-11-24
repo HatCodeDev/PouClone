@@ -25,6 +25,7 @@
   },
   "name":"PouClone",
   "resources":[
+    {"id":{"name":"obj_bano","path":"objects/obj_bano/obj_bano.yy",},},
     {"id":{"name":"obj_cocina","path":"objects/obj_cocina/obj_cocina.yy",},},
     {"id":{"name":"obj_nav","path":"objects/obj_nav/obj_nav.yy",},},
     {"id":{"name":"obj_pou","path":"objects/obj_pou/obj_pou.yy",},},

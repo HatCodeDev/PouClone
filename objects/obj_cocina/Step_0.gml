@@ -237,6 +237,14 @@ if (is_dragging) {
                     _pou.jump_vy = -8;
                     audio_play_sound(snd_pou_hablar, 2, false);
                     
+                    // Al comer, Pou se ensucia gradualmente como en el juego original
+                    global.pou_suciedad = min(100, global.pou_suciedad + 8);
+                    if (variable_global_exists("pou_dirt_spots")) {
+                        for (var _k = 0; _k < array_length(global.pou_dirt_spots); _k++) {
+                            global.pou_dirt_spots[_k].dirty = min(1.0, global.pou_dirt_spots[_k].dirty + 0.1);
+                        }
+                    }
+                    
                     // Recompensa en monedas (+2)
                     global.pou_monedas += 2;
                     audio_play_sound(snd_moneda, 1, false);

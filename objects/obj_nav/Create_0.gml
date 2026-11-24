@@ -7,7 +7,7 @@ switch (room) {
         room_title = "Sala";
         doors = [
             { label: "Cocina", target: rm_cocina, x: 150, y: 1140 },
-            { label: "Baño",   target: rm_bano,   x: 570, y: 1140 }
+            { label: "Ducha",  target: rm_bano,   x: 570, y: 1140 }
         ];
         break;
     case rm_cocina:
@@ -19,8 +19,12 @@ switch (room) {
         }
         break;
     default:
-        room_title = "Baño";
+        room_title = "Ducha";
         doors = [ { label: "Sala", target: rm_sala, x: 150, y: 1140 } ];
+        // Asegurar que obj_bano exista en el baño/ducha
+        if (!instance_exists(obj_bano)) {
+            instance_create_layer(0, 0, "Instances", obj_bano);
+        }
         break;
 }
 

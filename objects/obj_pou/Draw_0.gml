@@ -27,6 +27,38 @@ draw_set_color(c_white);
 // Dibujo de Pou (con head_shake_x en caso de negación con la cabeza)
 draw_sprite_ext(sprite_index, image_index, x + head_shake_x, y + jump_y, _sx, _sy, 0, c_white, 1);
 
+// Dibujo de manchas de suciedad/lodo en el cuerpo de Pou
+if (global.pou_suciedad > 0 && variable_global_exists("pou_dirt_spots")) {
+    for (var _i = 0; _i < array_length(global.pou_dirt_spots); _i++) {
+        var _s = global.pou_dirt_spots[_i];
+        if (_s.dirty > 0) {
+            var _spot_alpha = _s.dirty * clamp(global.pou_suciedad / 60, 0.25, 1);
+            var _spot_x = (x + head_shake_x) + _s.ox * (_sx / base_scale);
+            var _spot_y = (y + jump_y) + _s.oy * (_sy / base_scale);
+            var _spot_r = _s.r * (_sx / base_scale) * (0.65 + 0.35 * _s.dirty);
+            
+            // Borde oscuro del lodo
+            draw_set_alpha(_spot_alpha * 0.95);
+            draw_set_color(make_color_rgb(70, 45, 25));
+            draw_circle(_spot_x, _spot_y, _spot_r + 2, false);
+            draw_circle(_spot_x - _spot_r * 0.4, _spot_y - _spot_r * 0.3, _spot_r * 0.65 + 1.5, false);
+            draw_circle(_spot_x + _spot_r * 0.4, _spot_y + _spot_r * 0.25, _spot_r * 0.6 + 1.5, false);
+            
+            // Relleno de lodo
+            draw_set_color(make_color_rgb(115, 78, 45));
+            draw_circle(_spot_x, _spot_y, _spot_r, false);
+            draw_circle(_spot_x - _spot_r * 0.4, _spot_y - _spot_r * 0.3, _spot_r * 0.65, false);
+            draw_circle(_spot_x + _spot_r * 0.4, _spot_y + _spot_r * 0.25, _spot_r * 0.6, false);
+            
+            // Brillo de textura de lodo
+            draw_set_color(make_color_rgb(148, 102, 60));
+            draw_circle(_spot_x - _spot_r * 0.2, _spot_y - _spot_r * 0.2, _spot_r * 0.38, false);
+        }
+    }
+    draw_set_alpha(1);
+    draw_set_color(c_white);
+}
+
 // Dibujar los botones de cambio de emoción ÚNICAMENTE en la sala (rm_sala)
 if (room == rm_sala) {
     var _c_pou_text   = make_color_rgb(52, 36, 20);

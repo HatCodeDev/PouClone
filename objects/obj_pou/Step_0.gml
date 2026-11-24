@@ -32,8 +32,8 @@ if (room == rm_sala && mouse_check_button_pressed(mb_left)) {
     }
 }
 
-// En la cocina o cuando no hay override manual, actualizar la emoción automáticamente según la interacción
-if (room == rm_cocina || !manual_override) {
+// Reacciones automáticas según el cuarto e interacción (si no hay override manual)
+if (room == rm_cocina) {
     if (mouth_open || chew_timer > 0) {
         cambiar_emocion(PouEmocion.Feliz);
     } else if (refusing || head_shake_timer > 0) {
@@ -47,12 +47,39 @@ if (room == rm_cocina || !manual_override) {
             cambiar_emocion(PouEmocion.Normal);
         }
     }
+} else if (room == rm_bano) {
+    var _bano_inst = instance_find(obj_bano, 0);
+    if (_bano_inst != noone && _bano_inst.is_dragging) {
+        cambiar_emocion(PouEmocion.Feliz);
+    } else if (!manual_override) {
+        if (global.pou_suciedad >= 50) {
+            cambiar_emocion(PouEmocion.Triste);
+        } else if (global.pou_suciedad <= 0) {
+            cambiar_emocion(PouEmocion.Feliz);
+        } else {
+            cambiar_emocion(PouEmocion.Normal);
+        }
+    }
+} else if (!manual_override) {
+    if (global.pou_suciedad >= 70) {
+        cambiar_emocion(PouEmocion.Triste);
+    } else if (global.pou_hambre < 35) {
+        cambiar_emocion(PouEmocion.Hambriento);
+    } else if (global.pou_hambre >= 75) {
+        cambiar_emocion(PouEmocion.Feliz);
+    } else {
+        cambiar_emocion(PouEmocion.Normal);
+    }
 }
 
-// Toque y caricia a Pou (solo si no se está arrastrando comida ni está la nevera abierta en la cocina)
+// Toque y caricia a Pou (solo si no se está arrastrando comida, bañando ni con la nevera abierta)
 var _bloquear_toque = false;
 var _cocina = instance_find(obj_cocina, 0);
 if (_cocina != noone && (_cocina.is_dragging || _cocina.fridge_open)) {
+    _bloquear_toque = true;
+}
+var _bano = instance_find(obj_bano, 0);
+if (_bano != noone && _bano.is_dragging) {
     _bloquear_toque = true;
 }
 

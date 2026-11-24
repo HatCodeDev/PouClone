@@ -27,6 +27,17 @@ if (!variable_global_exists("pou_diversion")) global.pou_diversion = 70;
 if (!variable_global_exists("pou_energia")) global.pou_energia = 85;
 if (!variable_global_exists("pou_monedas")) global.pou_monedas = 250;
 if (!variable_global_exists("pou_emocion")) global.pou_emocion = PouEmocion.Hambriento;
+if (!variable_global_exists("pou_suciedad")) global.pou_suciedad = 100; // Empieza sucio para probar el baño
+if (!variable_global_exists("pou_dirt_spots")) {
+    global.pou_dirt_spots = [
+        { ox: -70, oy: -210, r: 24, dirty: 1.0 }, // Frente izquierda
+        { ox:  65, oy: -195, r: 21, dirty: 1.0 }, // Frente derecha
+        { ox: -125, oy: -120, r: 27, dirty: 1.0 }, // Costado/mejilla izquierda
+        { ox:  120, oy: -115, r: 25, dirty: 1.0 }, // Costado/mejilla derecha
+        { ox:  -50, oy:  -40, r: 24, dirty: 1.0 }, // Pancita izquierda
+        { ox:   55, oy:  -35, r: 25, dirty: 1.0 }  // Pancita derecha
+    ];
+}
 
 /// @function cambiar_emocion(_emocion)
 /// @param {Real} _emocion Valor de PouEmocion (0 a 5).
