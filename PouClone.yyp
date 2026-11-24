@@ -109,6 +109,7 @@
     {"roomId":{"name":"rm_sala","path":"rooms/rm_sala/rm_sala.yy",},},
     {"roomId":{"name":"rm_cocina","path":"rooms/rm_cocina/rm_cocina.yy",},},
     {"roomId":{"name":"rm_bano","path":"rooms/rm_bano/rm_bano.yy",},},
+    {"roomId":{"name":"rm_dormitorio","path":"rooms/rm_dormitorio/rm_dormitorio.yy",},},
   ],
   "templateType":null,
   "TextureGroups":[
