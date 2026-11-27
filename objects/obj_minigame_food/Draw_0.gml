@@ -60,10 +60,10 @@ for (var _i = 0; _i < array_length(falling_items); _i++) {
 // ========================================================
 // 3. POU EN EL JUEGO (Con soporte para parpadeo al ser golpeado)
 // ========================================================
-// Sombra de Pou en el suelo
-draw_set_alpha(0.35);
+// Sombra de Pou en el césped
+draw_set_alpha(0.32);
 draw_set_color(c_black);
-draw_ellipse(pou_x - 55, 1136, pou_x + 55, 1152, false);
+draw_ellipse(pou_x - 45, 1134, pou_x + 45, 1148, false);
 draw_set_alpha(1.0);
 
 // Parpadeo de invulnerabilidad tras daño
@@ -73,18 +73,25 @@ draw_set_alpha(_pou_alpha);
 // Dibujo del sprite de Pou
 draw_sprite_ext(spr_pou_emociones, pou_emotion, pou_x + head_shake_x + shake_x, pou_y + shake_y, pou_scale_x, pou_scale_y, 0, c_white, _pou_alpha);
 
-// Dibujo de Sombrero equipado si existe
-if (variable_global_exists("pou_sombrero") && global.pou_sombrero != -1) {
-    var _hat_y = pou_y - 88 * (pou_scale_y / pou_base_scale);
-    var _hat_scale = pou_scale_x * 0.82;
-    draw_sprite_ext(global.pou_sombrero, 0, pou_x + head_shake_x + shake_x, _hat_y + shake_y, _hat_scale, _hat_scale, 0, c_white, _pou_alpha);
+// Dibujo de Lentes equipados si existen (con altura correcta en los ojos)
+if (variable_global_exists("pou_lentes") && global.pou_lentes != -1) {
+    var _glasses_y = pou_y + shake_y - 228 * pou_scale_y;
+    draw_sprite_ext(global.pou_lentes, 0, pou_x + head_shake_x + shake_x, _glasses_y, pou_scale_x * 0.70, pou_scale_y * 0.70, 0, c_white, _pou_alpha);
 }
 
-// Dibujo de Lentes equipados si existen
-if (variable_global_exists("pou_lentes") && global.pou_lentes != -1) {
-    var _glasses_y = pou_y - 28 * (pou_scale_y / pou_base_scale);
-    var _glasses_scale = pou_scale_x * 0.85;
-    draw_sprite_ext(global.pou_lentes, 0, pou_x + head_shake_x + shake_x, _glasses_y + shake_y, _glasses_scale, _glasses_scale, 0, c_white, _pou_alpha);
+// Dibujo de Sombrero equipado si existe (con altura correcta en la cabeza)
+if (variable_global_exists("pou_sombrero") && global.pou_sombrero != -1) {
+    var _hat_y_off = 332;
+    var _hat_scale = 0.75;
+    if (global.pou_sombrero == spr_sombrero_bruja) {
+        _hat_y_off = 358;
+        _hat_scale = 0.80;
+    } else if (global.pou_sombrero == spr_sombrero_negro) {
+        _hat_y_off = 345;
+        _hat_scale = 0.78;
+    }
+    var _hat_y = pou_y + shake_y - _hat_y_off * pou_scale_y;
+    draw_sprite_ext(global.pou_sombrero, 0, pou_x + head_shake_x + shake_x, _hat_y, pou_scale_x * _hat_scale, pou_scale_y * _hat_scale, 0, c_white, _pou_alpha);
 }
 draw_set_alpha(1.0);
 
@@ -175,8 +182,8 @@ draw_set_color(_c_pou_text);
 draw_set_halign(fa_left);
 draw_text_transformed(_mx1 + 48, (_my1 + _my2) * 0.5, string(global.pou_monedas), 1.25, 1.25, 0);
 
-// 5.4 Vidas restantes (Pastilla a la derecha con 3 corazones)
-var _vx1 = 535;
+// 5.4 Vidas restantes (Pastilla a la derecha con 4 corazones)
+var _vx1 = 515;
 var _vy1 = 20;
 var _vx2 = 700;
 var _vy2 = 68;
@@ -188,29 +195,30 @@ draw_roundrect(_vx1, _vy1, _vx2, _vy2, false);
 draw_set_color(_c_pou_border);
 draw_roundrect(_vx1, _vy1, _vx2, _vy2, true);
 
+var _heart_spacing = (_vx2 - _vx1 - 36) / (max_lives - 1);
 for (var _l = 0; _l < max_lives; _l++) {
-    var _lx = _vx1 + 28 + _l * 48;
+    var _lx = _vx1 + 18 + _l * _heart_spacing;
     var _ly = (_vy1 + _vy2) * 0.5;
     if (_l < lives_count) {
         // Vida activa (Círculo rojo brillante)
         draw_set_color(make_color_rgb(235, 60, 60));
-        draw_circle(_lx, _ly, 13, false);
+        draw_circle(_lx, _ly, 12, false);
         draw_set_color(_c_pou_border);
-        draw_circle(_lx, _ly, 13, true);
+        draw_circle(_lx, _ly, 12, true);
         draw_set_color(c_white);
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
-        draw_text_transformed(_lx, _ly - 1, "<3", 0.95, 0.95, 0);
+        draw_text_transformed(_lx, _ly - 1, "<3", 0.85, 0.85, 0);
     } else {
         // Vida perdida (Gris con X)
         draw_set_color(make_color_rgb(180, 170, 160));
-        draw_circle(_lx, _ly, 13, false);
+        draw_circle(_lx, _ly, 12, false);
         draw_set_color(_c_pou_border);
-        draw_circle(_lx, _ly, 13, true);
+        draw_circle(_lx, _ly, 12, true);
         draw_set_color(make_color_rgb(110, 100, 90));
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
-        draw_text_transformed(_lx, _ly, "X", 0.95, 0.95, 0);
+        draw_text_transformed(_lx, _ly, "X", 0.85, 0.85, 0);
     }
 }
 
@@ -252,7 +260,7 @@ if (game_state == state_ready) {
     // Decoración de comida cayendo
     var _fl = dsin(anim_t * 3) * 6;
     draw_sprite_ext(spr_food_cherries, 0, 160, _ry1 + 175 + _fl, 0.9, 0.9, -15, c_white, 1);
-    draw_sprite_ext(spr_pou_emociones, 1, 360, _ry1 + 215, 0.85, 0.85, 0, c_white, 1);
+    draw_sprite_ext(spr_pou_emociones, 1, 360, _ry1 + 225, 0.60, 0.60, 0, c_white, 1);
     draw_sprite_ext(spr_food_apple, 0, 560, _ry1 + 175 - _fl, 0.9, 0.9, 15, c_white, 1);
     
     // Instrucciones en texto limpio ASCII
@@ -261,7 +269,7 @@ if (game_state == state_ready) {
     draw_text_transformed(360, _ry1 + 335, "* Atrapa las frutas y postres (+1 Moneda por comida)", 1.05, 1.05, 0);
     draw_text_transformed(360, _ry1 + 375, "* Esquiva los zapatos y herraduras!", 1.15, 1.15, 0);
     draw_text_transformed(360, _ry1 + 415, "* Cada 5 comidas seguidas: Bonificacion de COMBO!", 1.1, 1.1, 0);
-    draw_text_transformed(360, _ry1 + 455, "* Tienes 3 vidas. No dejes caer la comida!", 1.1, 1.1, 0);
+    draw_text_transformed(360, _ry1 + 455, "* Tienes 4 vidas. Cada 15 comidas recuperas 1 vida!", 1.05, 1.05, 0);
     
     // Botón Empezar
     var _btn_s_x1 = 360 - 150;
@@ -365,7 +373,7 @@ if (game_state == state_gameover) {
     }
     
     // Pou triste en el centro
-    draw_sprite_ext(spr_pou_emociones, 3, 360, _gy1 + 175, 0.8, 0.8, 0, c_white, 1);
+    draw_sprite_ext(spr_pou_emociones, 3, 360, _gy1 + 185, 0.60, 0.60, 0, c_white, 1);
     
     // Estadísticas
     draw_set_color(_c_pou_text);

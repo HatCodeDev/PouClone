@@ -24,18 +24,18 @@ game_state = state_ready;
 // Estadísticas de la partida
 score_food = 0;
 coins_earned = 0;
-lives_count = 3;
-max_lives = 3;
+max_lives = 4;
+lives_count = 4;
 combo = 0;
 max_combo = 0;
 is_new_record = false;
 anim_t = 0;
 
-// Pou en el minijuego
+// Pou en el minijuego (Escala ágil y proporcionada 0.48)
 pou_x = 360;
-pou_y = 1080;
+pou_y = 1140;
 pou_target_x = 360;
-pou_base_scale = 1.15;
+pou_base_scale = 0.48;
 pou_scale_x = pou_base_scale;
 pou_scale_y = pou_base_scale;
 pou_emotion = 1; // 1 = Feliz
@@ -51,10 +51,10 @@ shake_timer = 0;
 shake_x = 0;
 shake_y = 0;
 
-// Spawner inteligente de items
+// Spawner inteligente de items (Ritmo inicial accesible y agradable)
 spawn_timer = 0;
-spawn_interval_base = 52;
-fall_speed_base = 5.8;
+spawn_interval_base = 65;
+fall_speed_base = 4.2;
 last_spawn_x = 360;
 falling_items = [];
 
