@@ -63,16 +63,16 @@ if (games_menu_open) {
             exit;
         }
         
-        // 2.4 Tarjeta 2: Juego de Memoria (Memory Match)
+        // 2.4 Tarjeta 2: Juego de Memoria (Memory Match) - Iniciar Minijuego
         var _c2_x1 = 55;
         var _c2_y1 = 430;
         var _c2_x2 = 665;
         var _c2_y2 = 695;
         if (point_in_rectangle(mouse_x, mouse_y, _c2_x1, _c2_y1, _c2_x2, _c2_y2)) {
             selected_game = 1;
-            feedback_msg = "Minijuego de Memoria en desarrollo!";
-            feedback_timer = 120;
-            audio_play_sound(snd_aviso, 1, false);
+            games_menu_open = false;
+            audio_play_sound(snd_click, 1, false);
+            room_goto(rm_minigame_memory);
             exit;
         }
     }
