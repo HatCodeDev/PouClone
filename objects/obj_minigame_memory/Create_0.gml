@@ -40,13 +40,14 @@ mismatch_timer = 0;
 particles = [];
 floating_texts = [];
 
-// Pou supervisor en la parte superior
+// Pou supervisor en la parte superior (perfectamente proporcionado sin desbordes)
 pou_x = 360;
-pou_y = 230;
-pou_scale = 0.88;
-pou_emotion = 1; // 1 = Feliz
+pou_y = 290;
+pou_scale = 0.52;
+pou_emotion = 0; // 0 = Normal, 1 = Feliz, 2 = Serio
 pou_jump_y = 0;
 pou_jump_vy = 0;
+mismatch_emotion_timer = 0;
 
 // Catálogo de iconos para las 8 parejas (imágenes oficiales)
 pair_icons = [
@@ -73,6 +74,7 @@ setup_deck = function() {
     coins_earned = 0;
     is_new_record = false;
     victory_delay = 0;
+    pou_emotion = 0;
     
     // Crear lista de 16 identificadores (8 parejas duplicadas)
     var _deck_ids = [];
@@ -89,11 +91,11 @@ setup_deck = function() {
         _deck_ids[_j] = _temp;
     }
     
-    // Dimensiones y posiciones de la cuadrícula 4x4
-    var _card_size = 110;
-    var _spacing = 22;
-    var _start_x = 360 - (2 * _card_size + 1.5 * _spacing);
-    var _start_y = 440;
+    // Dimensiones y posiciones de la cuadrícula 4x4 (optimizada 130x130, centrada y sin desbordes)
+    var _card_size = 130;
+    var _spacing = 18;
+    var _start_x = 73;
+    var _start_y = 448;
     
     for (var _row = 0; _row < 4; _row++) {
         for (var _col = 0; _col < 4; _col++) {
@@ -112,6 +114,7 @@ setup_deck = function() {
                 h: _card_size,
                 scale_x: 1.0,
                 scale_y: 1.0,
+                flip_phase: 0, // 0: reposo, 1: encogiéndose al voltear, 2: expandiéndose, -1: encogiéndose al tapar, -2: expandiéndose
                 is_face_up: false,
                 is_matched: false,
                 glow: 0.0
@@ -123,3 +126,4 @@ setup_deck = function() {
 
 // Crear tablero inicial
 setup_deck();
+
