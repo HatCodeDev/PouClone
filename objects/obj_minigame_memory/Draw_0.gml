@@ -1,4 +1,4 @@
-/// @desc Renderizado visual completo del Minijuego "Juego de Memoria"
+/// @desc Renderizado visual completo del Minijuego "Juego de Memoria" - Versión Pulida
 
 // Paleta de colores oficial de Pou
 var _c_pou_text   = make_color_rgb(52, 36, 20);
@@ -145,7 +145,7 @@ draw_set_valign(fa_middle);
 draw_text_transformed((_tx1 + _tx2) * 0.5, (_ty1 + _ty2) * 0.5, string(timer_seconds) + "s", 1.25, 1.25, 0);
 
 // ========================================================
-// 4. TABLERO DE CARTAS (CUADRÍCULA 4x4 = 16 CARTAS)
+// 4. TABLERO DE CARTAS (CUADRÍCULA 4x4 = 16 CARTAS CON ANIMACIÓN ELÁSTICA)
 // ========================================================
 for (var _i = 0; _i < array_length(cards); _i++) {
     var _cd = cards[_i];
@@ -161,33 +161,36 @@ for (var _i = 0; _i < array_length(cards); _i++) {
     draw_roundrect(_cx - _half_w + 3, _cy - _half_h + 4, _cx + _half_w + 3, _cy + _half_h + 4, false);
     draw_set_alpha(1.0);
     
+    var _scale_draw_x = 1.1 * _cd.scale_x;
+    var _scale_draw_y = 1.1 * _cd.scale_y;
+    
     if (_cd.is_face_up || _cd.is_matched) {
         // Carta Boca Arriba (spr_carta_frente + Icono correspondiente)
-        draw_sprite_ext(spr_carta_frente, 0, _cx, _cy, 1.1, 1.1, 0, c_white, 1);
+        draw_sprite_ext(spr_carta_frente, 0, _cx, _cy, _scale_draw_x, _scale_draw_y, 0, c_white, 1);
         
         // Icono de la pareja en el centro de la carta
-        draw_sprite_ext(_cd.icon, 0, _cx, _cy, 0.78, 0.78, 0, c_white, 1);
+        draw_sprite_ext(_cd.icon, 0, _cx, _cy, 0.78 * _cd.scale_x, 0.78 * _cd.scale_y, 0, c_white, 1);
         
-        // Borde dorado si está acertada
+        // Borde verde si está acertada o azul si está descubierta
         if (_cd.is_matched) {
             draw_set_color(make_color_rgb(75, 185, 60));
-            draw_roundrect(_cx - _half_w, _cy - _half_h, _cx + _half_w, _cy + _half_h, true);
+            draw_roundrect(_cx - _half_w * _cd.scale_x, _cy - _half_h * _cd.scale_y, _cx + _half_w * _cd.scale_x, _cy + _half_h * _cd.scale_y, true);
         } else {
             draw_set_color(make_color_rgb(60, 130, 210));
-            draw_roundrect(_cx - _half_w, _cy - _half_h, _cx + _half_w, _cy + _half_h, true);
+            draw_roundrect(_cx - _half_w * _cd.scale_x, _cy - _half_h * _cd.scale_y, _cx + _half_w * _cd.scale_x, _cy + _half_h * _cd.scale_y, true);
         }
         
-        // Brillo visual tras acertar
+        // Brillo visual de celebración al acertar
         if (_cd.glow > 0) {
             draw_set_alpha(_cd.glow * 0.45);
             draw_set_color(c_yellow);
-            draw_roundrect(_cx - _half_w - 4, _cy - _half_h - 4, _cx + _half_w + 4, _cy + _half_h + 4, false);
+            draw_roundrect(_cx - _half_w * _cd.scale_x - 4, _cy - _half_h * _cd.scale_y - 4, _cx + _half_w * _cd.scale_x + 4, _cy + _half_h * _cd.scale_y + 4, false);
             draw_set_alpha(1.0);
         }
     } else {
         // Carta Boca Abajo (spr_carta_atras)
         var _card_col = _is_hover ? make_color_rgb(255, 245, 230) : c_white;
-        draw_sprite_ext(spr_carta_atras, 0, _cx, _cy, 1.1, 1.1, 0, _card_col, 1);
+        draw_sprite_ext(spr_carta_atras, 0, _cx, _cy, _scale_draw_x, _scale_draw_y, 0, _card_col, 1);
         
         if (_is_hover) {
             draw_set_color(make_color_rgb(220, 160, 50));
@@ -227,9 +230,9 @@ if (game_state == state_ready) {
     draw_set_alpha(1.0);
     
     var _rw1 = 50;
-    var _ry1 = 260;
+    var _ry1 = 250;
     var _rw2 = 670;
-    var _ry2 = 875;
+    var _ry2 = 885;
     
     draw_set_color(_c_pou_shadow);
     draw_roundrect(_rw1 + 3, _ry1 + 5, _rw2 + 3, _ry2 + 5, false);
@@ -242,25 +245,31 @@ if (game_state == state_ready) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_top);
     draw_set_color(_c_pou_text);
-    draw_text_transformed(360, _ry1 + 35, "JUEGO DE MEMORIA", 1.65, 1.65, 0);
+    draw_text_transformed(360, _ry1 + 30, "JUEGO DE MEMORIA", 1.65, 1.65, 0);
     draw_set_color(make_color_rgb(140, 110, 80));
-    draw_text_transformed(360, _ry1 + 75, "(Memory Match)", 1.15, 1.15, 0);
+    draw_text_transformed(360, _ry1 + 70, "(Memory Match)", 1.15, 1.15, 0);
+    
+    // Récord actual
+    if (global.memory_best_moves > 0) {
+        draw_set_color(make_color_rgb(220, 140, 20));
+        draw_text_transformed(360, _ry1 + 105, "Mejor Record: " + string(global.memory_best_moves) + " intentos", 1.15, 1.15, 0);
+    }
     
     // Decoración de cartas
     var _fl = dsin(anim_t * 3) * 6;
-    draw_sprite_ext(spr_carta_atras, 0, 200, _ry1 + 185 + _fl, 0.85, 0.85, -10, c_white, 1);
-    draw_sprite_ext(spr_carta_frente, 0, 360, _ry1 + 185 - _fl, 0.85, 0.85, 0, c_white, 1);
-    draw_sprite_ext(spr_game_avion, 0, 360, _ry1 + 185 - _fl, 0.65, 0.65, 0, c_white, 1);
-    draw_sprite_ext(spr_carta_frente, 0, 520, _ry1 + 185 + _fl, 0.85, 0.85, 10, c_white, 1);
-    draw_sprite_ext(spr_food_apple, 0, 520, _ry1 + 185 + _fl, 0.65, 0.65, 10, c_white, 1);
+    draw_sprite_ext(spr_carta_atras, 0, 200, _ry1 + 180 + _fl, 0.85, 0.85, -10, c_white, 1);
+    draw_sprite_ext(spr_carta_frente, 0, 360, _ry1 + 180 - _fl, 0.85, 0.85, 0, c_white, 1);
+    draw_sprite_ext(spr_game_avion, 0, 360, _ry1 + 180 - _fl, 0.65, 0.65, 0, c_white, 1);
+    draw_sprite_ext(spr_carta_frente, 0, 520, _ry1 + 180 + _fl, 0.85, 0.85, 10, c_white, 1);
+    draw_sprite_ext(spr_food_apple, 0, 520, _ry1 + 180 + _fl, 0.65, 0.65, 10, c_white, 1);
     
     // Instrucciones en texto limpio ASCII
     draw_set_color(make_color_rgb(90, 75, 60));
-    draw_text_transformed(360, _ry1 + 285, "* Toca dos cartas para voltearlas", 1.2, 1.2, 0);
-    draw_text_transformed(360, _ry1 + 325, "* Encuentra las 8 parejas de figuras iguales", 1.1, 1.1, 0);
-    draw_text_transformed(360, _ry1 + 365, "* Ganas +5 Monedas por cada pareja acertada!", 1.15, 1.15, 0);
-    draw_text_transformed(360, _ry1 + 405, "* Bonificacion de +10 Monedas al completar el tablero!", 1.05, 1.05, 0);
-    draw_text_transformed(360, _ry1 + 445, "* Aumenta la DIVERSION de Pou al maximo!", 1.1, 1.1, 0);
+    draw_text_transformed(360, _ry1 + 290, "* Toca dos cartas para voltearlas", 1.2, 1.2, 0);
+    draw_text_transformed(360, _ry1 + 330, "* Encuentra las 8 parejas de figuras iguales", 1.1, 1.1, 0);
+    draw_text_transformed(360, _ry1 + 370, "* Ganas +5 Monedas por cada pareja acertada!", 1.15, 1.15, 0);
+    draw_text_transformed(360, _ry1 + 410, "* Bonificacion de +10 Monedas al completar el tablero!", 1.05, 1.05, 0);
+    draw_text_transformed(360, _ry1 + 450, "* Aumenta la DIVERSION de Pou al maximo!", 1.1, 1.1, 0);
     
     // Botón Empezar
     var _btn_s_x1 = 360 - 150;
@@ -292,7 +301,7 @@ if (game_state == state_victory) {
     draw_set_alpha(1.0);
     
     var _vw1 = 60;
-    var _vy1 = 280;
+    var _vy1 = 260;
     var _vw2 = 660;
     var _vy2 = 955;
     
@@ -307,7 +316,13 @@ if (game_state == state_victory) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_top);
     draw_set_color(make_color_rgb(45, 140, 35));
-    draw_text_transformed(360, _vy1 + 35, "EXCELENTE MEMORIA!", 1.7, 1.7, 0);
+    draw_text_transformed(360, _vy1 + 30, "EXCELENTE MEMORIA!", 1.7, 1.7, 0);
+    
+    // Nuevo récord si corresponde
+    if (is_new_record) {
+        draw_set_color(make_color_rgb(230, 150, 20));
+        draw_text_transformed(360, _vy1 + 75, "NUEVO RECORD DE INTENTOS!", 1.35, 1.35, 0);
+    }
     
     // Pou feliz celebrando
     draw_sprite_ext(spr_pou_emociones, 1, 360, _vy1 + 175, 0.85, 0.85, 0, c_white, 1);
@@ -318,10 +333,10 @@ if (game_state == state_victory) {
     draw_text_transformed(360, _vy1 + 295, "Tiempo total: " + string(timer_seconds) + " segundos", 1.35, 1.35, 0);
     
     // Monedas ganadas
-    draw_sprite_ext(spr_moneda, 0, 310, _vy1 + 360, 0.7, 0.7, 0, c_white, 1);
+    draw_sprite_ext(spr_moneda, 0, 305, _vy1 + 360, 0.7, 0.7, 0, c_white, 1);
     draw_set_color(make_color_rgb(140, 105, 30));
     draw_set_halign(fa_left);
-    draw_text_transformed(345, _vy1 + 348, "+" + string(coins_earned) + " Monedas", 1.4, 1.4, 0);
+    draw_text_transformed(340, _vy1 + 348, "+" + string(coins_earned) + " Monedas", 1.4, 1.4, 0);
     
     draw_set_halign(fa_center);
     draw_set_color(make_color_rgb(45, 135, 40));

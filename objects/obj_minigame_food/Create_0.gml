@@ -1,10 +1,11 @@
-/// @desc Inicialización del Minijuego "Atrapar Comida" (Food Drop)
+/// @desc Inicialización del Minijuego "Atrapar Comida" (Food Drop) - Versión Pulida 100%
 
 // Variables globales de seguridad
 if (!variable_global_exists("pou_monedas")) global.pou_monedas = 250;
 if (!variable_global_exists("pou_diversion")) global.pou_diversion = 80;
 if (!variable_global_exists("pou_sombrero")) global.pou_sombrero = -1;
 if (!variable_global_exists("pou_lentes")) global.pou_lentes = -1;
+if (!variable_global_exists("food_drop_highscore")) global.food_drop_highscore = 0;
 
 // Ajuste de ventana para escritorio
 if (os_type == os_windows) {
@@ -14,10 +15,10 @@ if (os_type == os_windows) {
 }
 
 // Estados del minijuego
-// 0: Listo / Instrucciones, 1: En juego, 2: Fin de partida
 state_ready = 0;
 state_playing = 1;
-state_gameover = 2;
+state_paused = 2;
+state_gameover = 3;
 game_state = state_ready;
 
 // Estadísticas de la partida
@@ -25,6 +26,9 @@ score_food = 0;
 coins_earned = 0;
 lives_count = 3;
 max_lives = 3;
+combo = 0;
+max_combo = 0;
+is_new_record = false;
 anim_t = 0;
 
 // Pou en el minijuego
@@ -35,20 +39,23 @@ pou_base_scale = 1.15;
 pou_scale_x = pou_base_scale;
 pou_scale_y = pou_base_scale;
 pou_emotion = 1; // 1 = Feliz
-pou_mouth_open = false;
 eat_timer = 0;
 hurt_timer = 0;
 head_shake_x = 0;
+invulnerable_timer = 0;
+prev_mouse_x = mouse_x;
+using_mouse = false;
 
 // Efectos de cámara y pantalla
 shake_timer = 0;
 shake_x = 0;
 shake_y = 0;
 
-// Generador de items
+// Spawner inteligente de items
 spawn_timer = 0;
-spawn_interval_base = 56;
-fall_speed_base = 6.0;
+spawn_interval_base = 52;
+fall_speed_base = 5.8;
+last_spawn_x = 360;
 falling_items = [];
 
 // Catálogo de comidas deliciosas
@@ -82,5 +89,5 @@ clouds = [
     { x: 210, y: 320, spd: 0.38, w: 140, h: 50 }
 ];
 
-// Sonidos disponibles para variedad
+// Sonidos de comida disponibles para variedad
 eat_sounds = [snd_comer, snd_comer2, snd_comer3];

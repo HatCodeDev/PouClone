@@ -1,4 +1,4 @@
-/// @desc Lógica de juego, interacción táctil con cartas, detección de parejas y victoria
+/// @desc Lógica de juego, interacción táctil fluida, animaciones de cartas y victoria - Versión Pulida
 
 anim_t += 2.0;
 
@@ -33,6 +33,13 @@ for (var _t = array_length(floating_texts) - 1; _t >= 0; _t--) {
     }
 }
 
+// Suavizado elástico de escala de cartas
+for (var _c = 0; _c < array_length(cards); _c++) {
+    cards[_c].scale_x = lerp(cards[_c].scale_x, 1.0, 0.22);
+    cards[_c].scale_y = lerp(cards[_c].scale_y, 1.0, 0.22);
+    if (cards[_c].glow > 0) cards[_c].glow -= 0.035;
+}
+
 // ========================================================
 // 1. BOTÓN SALIR / VOLVER A LA SALA (Superior Izquierda)
 // ========================================================
@@ -61,6 +68,25 @@ if (game_state == state_ready) {
 // 3. ESTADO: EN JUEGO (STATE_PLAYING)
 // ========================================================
 if (game_state == state_playing) {
+    // Si se encontraron todas las parejas y está corriendo el breve retraso de celebración
+    if (victory_delay > 0) {
+        victory_delay--;
+        if (victory_delay == 0) {
+            game_state = state_victory;
+            coins_earned += 10;
+            global.pou_monedas += 10;
+            global.pou_diversion = 100;
+            
+            // Verificar mejor récord
+            if (global.memory_best_moves == 0 || moves_count < global.memory_best_moves) {
+                global.memory_best_moves = moves_count;
+                is_new_record = true;
+            }
+            audio_play_sound(snd_acierto, 1, false);
+        }
+        exit;
+    }
+    
     // Contador de tiempo transcurrido
     timer_frames++;
     if (timer_frames >= 60) {
@@ -68,52 +94,55 @@ if (game_state == state_playing) {
         timer_seconds++;
     }
     
-    // Desvanecimiento de brillo dorado en cartas acertadas
-    for (var _g = 0; _g < array_length(cards); _g++) {
-        if (cards[_g].glow > 0) {
-            cards[_g].glow -= 0.035;
+    // Manejo ultra reactivo de desacierto: si el jugador hace clic, se descarta la espera de inmediato
+    if (mismatch_timer > 0) {
+        mismatch_timer--;
+        if (mouse_check_button_pressed(mb_left) || mismatch_timer == 0) {
+            if (first_card != -1) cards[first_card].is_face_up = false;
+            if (second_card != -1) cards[second_card].is_face_up = false;
+            first_card = -1;
+            second_card = -1;
+            mismatch_timer = 0;
+            audio_play_sound(snd_click, 1, false);
         }
     }
     
-    // Si hay un desacierto esperando ocultarse
-    if (mismatch_timer > 0) {
-        mismatch_timer--;
-        if (mismatch_timer == 0) {
-            cards[first_card].is_face_up = false;
-            cards[second_card].is_face_up = false;
-            first_card = -1;
-            second_card = -1;
-            audio_play_sound(snd_click, 1, false);
-        }
-    } else if (mouse_check_button_pressed(mb_left)) {
-        // Interacción con cartas del tablero
+    // Si no hay desacierto bloqueando, permitir voltear cartas
+    if (mismatch_timer == 0 && mouse_check_button_pressed(mb_left)) {
         for (var _i = 0; _i < array_length(cards); _i++) {
-            var _c = cards[_i];
+            var _cd = cards[_i];
             
-            // Si la carta no está emparejada ni boca arriba actualmente
-            if (!_c.is_matched && !_c.is_face_up) {
-                var _x1 = _c.x - _c.w * 0.5;
-                var _y1 = _c.y - _c.h * 0.5;
-                var _x2 = _c.x + _c.w * 0.5;
-                var _y2 = _c.y + _c.h * 0.5;
+            if (!_cd.is_matched && !_cd.is_face_up) {
+                var _x1 = _cd.x - _cd.w * 0.5;
+                var _y1 = _cd.y - _cd.h * 0.5;
+                var _x2 = _cd.x + _cd.w * 0.5;
+                var _y2 = _cd.y + _cd.h * 0.5;
                 
                 if (point_in_rectangle(mouse_x, mouse_y, _x1, _y1, _x2, _y2)) {
                     if (first_card == -1) {
                         // Primera carta volteada
                         first_card = _i;
-                        _c.is_face_up = true;
+                        _cd.is_face_up = true;
+                        _cd.scale_x = 0.65;
+                        _cd.scale_y = 1.25;
                         audio_play_sound(snd_click, 1, false);
                     } else if (second_card == -1 && _i != first_card) {
                         // Segunda carta volteada
                         second_card = _i;
-                        _c.is_face_up = true;
+                        _cd.is_face_up = true;
+                        _cd.scale_x = 0.65;
+                        _cd.scale_y = 1.25;
                         moves_count++;
                         
-                        // Verificar coincidencia de pareja
+                        // Comprobar coincidencia
                         if (cards[first_card].pair_id == cards[second_card].pair_id) {
                             // ¡PAREJA ENCONTRADA!
                             cards[first_card].is_matched = true;
                             cards[second_card].is_matched = true;
+                            cards[first_card].scale_x = 1.25;
+                            cards[first_card].scale_y = 1.25;
+                            cards[second_card].scale_x = 1.25;
+                            cards[second_card].scale_y = 1.25;
                             cards[first_card].glow = 1.0;
                             cards[second_card].glow = 1.0;
                             
@@ -127,7 +156,7 @@ if (game_state == state_playing) {
                             // Reacción alegre de Pou
                             pou_jump_vy = -9.0;
                             
-                            // Textos flotantes de recompensa
+                            // Textos flotantes
                             array_push(floating_texts, {
                                 x: cards[first_card].x,
                                 y: cards[first_card].y - 32,
@@ -147,7 +176,7 @@ if (game_state == state_playing) {
                                 scale: 1.15
                             });
                             
-                            // Partículas brillantes tipo estrellas
+                            // Estrellitas brillantes
                             for (var _k = 0; _k < 7; _k++) {
                                 array_push(particles, {
                                     x: cards[first_card].x + random_range(-25, 25),
@@ -172,19 +201,14 @@ if (game_state == state_playing) {
                             first_card = -1;
                             second_card = -1;
                             
-                            // Verificar victoria completa (8 parejas encontradas)
+                            // Si se completaron las 8 parejas, dar breve respiro antes del modal
                             if (pairs_found >= total_pairs) {
-                                game_state = state_victory;
-                                // Bonificación de victoria por completar el tablero
-                                coins_earned += 10;
-                                global.pou_monedas += 10;
-                                global.pou_diversion = 100;
-                                audio_play_sound(snd_acierto, 1, false);
+                                victory_delay = 25;
                             }
                         } else {
                             // ¡NO COINCIDEN!
                             audio_play_sound(snd_no, 1, false);
-                            mismatch_timer = 32; // Pausa breve para memorizar
+                            mismatch_timer = 30; // Tiempo para memorizar
                         }
                     }
                     break;

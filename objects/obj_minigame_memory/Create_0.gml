@@ -1,10 +1,11 @@
-/// @desc Inicialización del Minijuego "Juego de Memoria" (Memory Match)
+/// @desc Inicialización del Minijuego "Juego de Memoria" (Memory Match) - Versión Pulida 100%
 
 // Variables globales de seguridad
 if (!variable_global_exists("pou_monedas")) global.pou_monedas = 250;
 if (!variable_global_exists("pou_diversion")) global.pou_diversion = 80;
 if (!variable_global_exists("pou_sombrero")) global.pou_sombrero = -1;
 if (!variable_global_exists("pou_lentes")) global.pou_lentes = -1;
+if (!variable_global_exists("memory_best_moves")) global.memory_best_moves = 0;
 
 // Ajuste de ventana para escritorio
 if (os_type == os_windows) {
@@ -27,6 +28,8 @@ timer_seconds = 0;
 timer_frames = 0;
 coins_earned = 0;
 anim_t = 0;
+is_new_record = false;
+victory_delay = 0;
 
 // Variables de interacción de cartas
 first_card = -1;
@@ -68,6 +71,8 @@ setup_deck = function() {
     timer_seconds = 0;
     timer_frames = 0;
     coins_earned = 0;
+    is_new_record = false;
+    victory_delay = 0;
     
     // Crear lista de 16 identificadores (8 parejas duplicadas)
     var _deck_ids = [];
@@ -76,7 +81,7 @@ setup_deck = function() {
         array_push(_deck_ids, _p);
     }
     
-    // Barajado aleatorio (Fisher-Yates)
+    // Barajado aleatorio algorítmico (Fisher-Yates)
     for (var _i = array_length(_deck_ids) - 1; _i > 0; _i--) {
         var _j = irandom(_i);
         var _temp = _deck_ids[_i];
@@ -105,9 +110,10 @@ setup_deck = function() {
                 y: _cy,
                 w: _card_size,
                 h: _card_size,
+                scale_x: 1.0,
+                scale_y: 1.0,
                 is_face_up: false,
                 is_matched: false,
-                flip_scale: 1.0,
                 glow: 0.0
             };
             array_push(cards, _c);

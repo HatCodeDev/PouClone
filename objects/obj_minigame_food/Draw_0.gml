@@ -1,4 +1,4 @@
-/// @desc Renderizado visual completo del Minijuego "Atrapar Comida"
+/// @desc Renderizado visual completo del Minijuego "Atrapar Comida" - Versión Pulida
 
 // Paleta de colores oficial de Pou
 var _c_pou_text   = make_color_rgb(52, 36, 20);
@@ -58,7 +58,7 @@ for (var _i = 0; _i < array_length(falling_items); _i++) {
 }
 
 // ========================================================
-// 3. POU EN EL JUEGO
+// 3. POU EN EL JUEGO (Con soporte para parpadeo al ser golpeado)
 // ========================================================
 // Sombra de Pou en el suelo
 draw_set_alpha(0.35);
@@ -66,22 +66,27 @@ draw_set_color(c_black);
 draw_ellipse(pou_x - 55, 1136, pou_x + 55, 1152, false);
 draw_set_alpha(1.0);
 
+// Parpadeo de invulnerabilidad tras daño
+var _pou_alpha = (invulnerable_timer > 0 && (invulnerable_timer mod 6 < 3)) ? 0.45 : 1.0;
+draw_set_alpha(_pou_alpha);
+
 // Dibujo del sprite de Pou
-draw_sprite_ext(spr_pou_emociones, pou_emotion, pou_x + head_shake_x + shake_x, pou_y + shake_y, pou_scale_x, pou_scale_y, 0, c_white, 1);
+draw_sprite_ext(spr_pou_emociones, pou_emotion, pou_x + head_shake_x + shake_x, pou_y + shake_y, pou_scale_x, pou_scale_y, 0, c_white, _pou_alpha);
 
 // Dibujo de Sombrero equipado si existe
 if (variable_global_exists("pou_sombrero") && global.pou_sombrero != -1) {
     var _hat_y = pou_y - 88 * (pou_scale_y / pou_base_scale);
     var _hat_scale = pou_scale_x * 0.82;
-    draw_sprite_ext(global.pou_sombrero, 0, pou_x + head_shake_x + shake_x, _hat_y + shake_y, _hat_scale, _hat_scale, 0, c_white, 1);
+    draw_sprite_ext(global.pou_sombrero, 0, pou_x + head_shake_x + shake_x, _hat_y + shake_y, _hat_scale, _hat_scale, 0, c_white, _pou_alpha);
 }
 
 // Dibujo de Lentes equipados si existen
 if (variable_global_exists("pou_lentes") && global.pou_lentes != -1) {
     var _glasses_y = pou_y - 28 * (pou_scale_y / pou_base_scale);
     var _glasses_scale = pou_scale_x * 0.85;
-    draw_sprite_ext(global.pou_lentes, 0, pou_x + head_shake_x + shake_x, _glasses_y + shake_y, _glasses_scale, _glasses_scale, 0, c_white, 1);
+    draw_sprite_ext(global.pou_lentes, 0, pou_x + head_shake_x + shake_x, _glasses_y + shake_y, _glasses_scale, _glasses_scale, 0, c_white, _pou_alpha);
 }
+draw_set_alpha(1.0);
 
 // ========================================================
 // 4. PARTÍCULAS Y TEXTOS FLOTANTES
@@ -108,9 +113,9 @@ draw_set_alpha(1.0);
 // 5. HUD SUPERIOR DE PARTIDA
 // ========================================================
 // 5.1 Botón Volver a la Sala (Izquierda)
-var _bx1 = 24;
+var _bx1 = 20;
 var _by1 = 20;
-var _bx2 = 145;
+var _bx2 = 135;
 var _by2 = 68;
 var _h_exit = point_in_rectangle(mouse_x, mouse_y, _bx1, _by1, _bx2, _by2);
 
@@ -126,8 +131,8 @@ draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 draw_text_transformed((_bx1 + _bx2) * 0.5, (_by1 + _by2) * 0.5, "<- Sala", 1.25, 1.25, 0);
 
-// 5.2 Pastilla de Puntos (Comidas atrapadas)
-var _px1 = 165;
+// 5.2 Pastilla de Puntos y Racha Combo
+var _px1 = 150;
 var _py1 = 20;
 var _px2 = 360;
 var _py2 = 68;
@@ -139,14 +144,21 @@ draw_roundrect(_px1, _py1, _px2, _py2, false);
 draw_set_color(_c_pou_border);
 draw_roundrect(_px1, _py1, _px2, _py2, true);
 
-draw_sprite_ext(spr_food_apple, 0, _px1 + 28, (_py1 + _py2) * 0.5, 0.45, 0.45, 0, c_white, 1);
+draw_sprite_ext(spr_food_apple, 0, _px1 + 24, (_py1 + _py2) * 0.5, 0.45, 0.45, 0, c_white, 1);
 draw_set_color(_c_pou_text);
 draw_set_halign(fa_left);
 draw_set_valign(fa_middle);
-draw_text_transformed(_px1 + 54, (_py1 + _py2) * 0.5, "Puntos: " + string(score_food), 1.25, 1.25, 0);
+draw_text_transformed(_px1 + 50, (_py1 + _py2) * 0.5, "Puntos: " + string(score_food), 1.25, 1.25, 0);
+
+if (combo >= 2) {
+    // Insignia de combo
+    draw_set_color(make_color_rgb(245, 160, 30));
+    draw_set_halign(fa_right);
+    draw_text_transformed(_px2 - 10, (_py1 + _py2) * 0.5, "x" + string(combo), 1.15, 1.15, 0);
+}
 
 // 5.3 Pastilla de Monedas
-var _mx1 = 380;
+var _mx1 = 375;
 var _my1 = 20;
 var _mx2 = 520;
 var _my2 = 68;
@@ -163,10 +175,10 @@ draw_set_color(_c_pou_text);
 draw_set_halign(fa_left);
 draw_text_transformed(_mx1 + 48, (_my1 + _my2) * 0.5, string(global.pou_monedas), 1.25, 1.25, 0);
 
-// 5.4 Vidas restantes (Pastilla a la derecha con 3 corazones/indicadores)
-var _vx1 = 540;
+// 5.4 Vidas restantes (Pastilla a la derecha con 3 corazones)
+var _vx1 = 535;
 var _vy1 = 20;
-var _vx2 = 696;
+var _vx2 = 700;
 var _vy2 = 68;
 
 draw_set_color(_c_pou_shadow);
@@ -190,7 +202,7 @@ for (var _l = 0; _l < max_lives; _l++) {
         draw_set_valign(fa_middle);
         draw_text_transformed(_lx, _ly - 1, "<3", 0.95, 0.95, 0);
     } else {
-        // Vida perdida (Gris oscuro con X)
+        // Vida perdida (Gris con X)
         draw_set_color(make_color_rgb(180, 170, 160));
         draw_circle(_lx, _ly, 13, false);
         draw_set_color(_c_pou_border);
@@ -212,9 +224,9 @@ if (game_state == state_ready) {
     draw_set_alpha(1.0);
     
     var _rw1 = 50;
-    var _ry1 = 260;
+    var _ry1 = 250;
     var _rw2 = 670;
-    var _ry2 = 875;
+    var _ry2 = 885;
     
     draw_set_color(_c_pou_shadow);
     draw_roundrect(_rw1 + 3, _ry1 + 5, _rw2 + 3, _ry2 + 5, false);
@@ -227,22 +239,29 @@ if (game_state == state_ready) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_top);
     draw_set_color(_c_pou_text);
-    draw_text_transformed(360, _ry1 + 35, "ATRAPAR COMIDA", 1.7, 1.7, 0);
+    draw_text_transformed(360, _ry1 + 30, "ATRAPAR COMIDA", 1.7, 1.7, 0);
     draw_set_color(make_color_rgb(140, 110, 80));
-    draw_text_transformed(360, _ry1 + 75, "(Food Drop)", 1.15, 1.15, 0);
+    draw_text_transformed(360, _ry1 + 70, "(Food Drop)", 1.15, 1.15, 0);
+    
+    // Récord actual
+    if (global.food_drop_highscore > 0) {
+        draw_set_color(make_color_rgb(220, 140, 20));
+        draw_text_transformed(360, _ry1 + 105, "Mejor Record: " + string(global.food_drop_highscore) + " puntos", 1.15, 1.15, 0);
+    }
     
     // Decoración de comida cayendo
     var _fl = dsin(anim_t * 3) * 6;
     draw_sprite_ext(spr_food_cherries, 0, 160, _ry1 + 175 + _fl, 0.9, 0.9, -15, c_white, 1);
-    draw_sprite_ext(spr_pou_emociones, 1, 360, _ry1 + 225, 0.85, 0.85, 0, c_white, 1);
+    draw_sprite_ext(spr_pou_emociones, 1, 360, _ry1 + 215, 0.85, 0.85, 0, c_white, 1);
     draw_sprite_ext(spr_food_apple, 0, 560, _ry1 + 175 - _fl, 0.9, 0.9, 15, c_white, 1);
     
     // Instrucciones en texto limpio ASCII
     draw_set_color(make_color_rgb(90, 75, 60));
-    draw_text_transformed(360, _ry1 + 300, "* Mueve a Pou con el raton o las flechas", 1.15, 1.15, 0);
-    draw_text_transformed(360, _ry1 + 340, "* Atrapa las frutas y postres para ganar puntos y monedas", 1.05, 1.05, 0);
-    draw_text_transformed(360, _ry1 + 380, "* Cuidado con los zapatos y herraduras!", 1.15, 1.15, 0);
-    draw_text_transformed(360, _ry1 + 420, "* Tienes 3 vidas. No dejes caer la comida!", 1.1, 1.1, 0);
+    draw_text_transformed(360, _ry1 + 295, "* Mueve a Pou con el raton o las flechas / A-D", 1.15, 1.15, 0);
+    draw_text_transformed(360, _ry1 + 335, "* Atrapa las frutas y postres (+1 Moneda por comida)", 1.05, 1.05, 0);
+    draw_text_transformed(360, _ry1 + 375, "* Esquiva los zapatos y herraduras!", 1.15, 1.15, 0);
+    draw_text_transformed(360, _ry1 + 415, "* Cada 5 comidas seguidas: Bonificacion de COMBO!", 1.1, 1.1, 0);
+    draw_text_transformed(360, _ry1 + 455, "* Tienes 3 vidas. No dejes caer la comida!", 1.1, 1.1, 0);
     
     // Botón Empezar
     var _btn_s_x1 = 360 - 150;
@@ -265,7 +284,55 @@ if (game_state == state_ready) {
 }
 
 // ========================================================
-// 7. MODAL: JUEGO TERMINADO (STATE_GAMEOVER)
+// 7. MODAL: JUEGO EN PAUSA (STATE_PAUSED)
+// ========================================================
+if (game_state == state_paused) {
+    draw_set_alpha(0.65);
+    draw_set_color(c_black);
+    draw_rectangle(0, 0, room_width, room_height, false);
+    draw_set_alpha(1.0);
+    
+    var _pw1 = 120;
+    var _py1 = 440;
+    var _pw2 = 600;
+    var _py2 = 780;
+    
+    draw_set_color(_c_pou_shadow);
+    draw_roundrect(_pw1 + 3, _py1 + 5, _pw2 + 3, _py2 + 5, false);
+    draw_set_color(_c_pou_pill);
+    draw_roundrect(_pw1, _py1, _pw2, _py2, false);
+    draw_set_color(_c_pou_border);
+    draw_roundrect(_pw1, _py1, _pw2, _py2, true);
+    
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_top);
+    draw_set_color(_c_pou_text);
+    draw_text_transformed(360, _py1 + 35, "JUEGO EN PAUSA", 1.6, 1.6, 0);
+    
+    // Botón Continuar
+    var _pr_x1 = 360 - 140; var _pr_y1 = 580; var _pr_x2 = 360 + 140; var _pr_y2 = 645;
+    var _h_pr = point_in_rectangle(mouse_x, mouse_y, _pr_x1, _pr_y1, _pr_x2, _pr_y2);
+    draw_set_color(_h_pr ? make_color_rgb(105, 195, 85) : _c_pou_green);
+    draw_roundrect(_pr_x1, _pr_y1, _pr_x2, _pr_y2, false);
+    draw_set_color(_c_pou_border);
+    draw_roundrect(_pr_x1, _pr_y1, _pr_x2, _pr_y2, true);
+    draw_set_color(c_white);
+    draw_set_valign(fa_middle);
+    draw_text_transformed(360, (_pr_y1 + _pr_y2) * 0.5, "Continuar", 1.35, 1.35, 0);
+    
+    // Botón Salir
+    var _pq_x1 = 360 - 140; var _pq_y1 = 665; var _pq_x2 = 360 + 140; var _pq_y2 = 730;
+    var _h_pq = point_in_rectangle(mouse_x, mouse_y, _pq_x1, _pq_y1, _pq_x2, _pq_y2);
+    draw_set_color(_h_pq ? make_color_rgb(245, 238, 225) : _c_pou_pill);
+    draw_roundrect(_pq_x1, _pq_y1, _pq_x2, _pq_y2, false);
+    draw_set_color(_c_pou_border);
+    draw_roundrect(_pq_x1, _pq_y1, _pq_x2, _pq_y2, true);
+    draw_set_color(_c_pou_text);
+    draw_text_transformed(360, (_pq_y1 + _pq_y2) * 0.5, "Salir a la Sala", 1.25, 1.25, 0);
+}
+
+// ========================================================
+// 8. MODAL: JUEGO TERMINADO (STATE_GAMEOVER)
 // ========================================================
 if (game_state == state_gameover) {
     draw_set_alpha(0.75);
@@ -274,7 +341,7 @@ if (game_state == state_gameover) {
     draw_set_alpha(1.0);
     
     var _gw1 = 60;
-    var _gy1 = 280;
+    var _gy1 = 260;
     var _gw2 = 660;
     var _gy2 = 945;
     
@@ -289,24 +356,31 @@ if (game_state == state_gameover) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_top);
     draw_set_color(make_color_rgb(190, 45, 45));
-    draw_text_transformed(360, _gy1 + 35, "FIN DEL JUEGO", 1.8, 1.8, 0);
+    draw_text_transformed(360, _gy1 + 30, "FIN DEL JUEGO", 1.8, 1.8, 0);
+    
+    // Nuevo récord si corresponde
+    if (is_new_record) {
+        draw_set_color(make_color_rgb(230, 150, 20));
+        draw_text_transformed(360, _gy1 + 75, "NUEVO RECORD!", 1.4, 1.4, 0);
+    }
     
     // Pou triste en el centro
     draw_sprite_ext(spr_pou_emociones, 3, 360, _gy1 + 175, 0.8, 0.8, 0, c_white, 1);
     
     // Estadísticas
     draw_set_color(_c_pou_text);
-    draw_text_transformed(360, _gy1 + 250, "Comidas Atrapadas: " + string(score_food), 1.4, 1.4, 0);
+    draw_text_transformed(360, _gy1 + 245, "Comidas Atrapadas: " + string(score_food), 1.4, 1.4, 0);
+    draw_text_transformed(360, _gy1 + 285, "Mejor Racha Combo: x" + string(max_combo), 1.25, 1.25, 0);
     
     // Monedas ganadas
-    draw_sprite_ext(spr_moneda, 0, 310, _gy1 + 325, 0.7, 0.7, 0, c_white, 1);
+    draw_sprite_ext(spr_moneda, 0, 305, _gy1 + 340, 0.7, 0.7, 0, c_white, 1);
     draw_set_color(make_color_rgb(140, 105, 30));
     draw_set_halign(fa_left);
-    draw_text_transformed(345, _gy1 + 310, "+" + string(coins_earned) + " Monedas", 1.4, 1.4, 0);
+    draw_text_transformed(340, _gy1 + 325, "+" + string(coins_earned) + " Monedas", 1.4, 1.4, 0);
     
     draw_set_halign(fa_center);
     draw_set_color(make_color_rgb(45, 135, 40));
-    draw_text_transformed(360, _gy1 + 375, "Diversion de Pou al 100%!", 1.25, 1.25, 0);
+    draw_text_transformed(360, _gy1 + 380, "Diversion de Pou aumentada!", 1.25, 1.25, 0);
     
     // Botón Reintentar
     var _btn_r_x1 = 360 - 150;

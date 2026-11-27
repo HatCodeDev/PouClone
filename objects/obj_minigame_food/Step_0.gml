@@ -1,4 +1,4 @@
-/// @desc Lógica de juego, física de Pou, caída de alimentos y detección de colisiones
+/// @desc Lógica de juego, física de Pou, caída de alimentos y detección de colisiones - Versión Pulida
 
 anim_t += 2.0;
 
@@ -43,9 +43,9 @@ for (var _t = array_length(floating_texts) - 1; _t >= 0; _t--) {
 }
 
 // ========================================================
-// 1. BOTÓN SALIR / VOLVER A LA SALA (Siempre visible arriba a la izquierda)
+// 1. BOTONES SUPERIORES: SALIR Y PAUSA
 // ========================================================
-var _btn_exit = point_in_rectangle(mouse_x, mouse_y, 24, 20, 145, 68);
+var _btn_exit = point_in_rectangle(mouse_x, mouse_y, 20, 20, 135, 68);
 if (mouse_check_button_pressed(mb_left) && _btn_exit) {
     audio_play_sound(snd_click, 1, false);
     room_goto(rm_sala);
@@ -57,11 +57,11 @@ if (mouse_check_button_pressed(mb_left) && _btn_exit) {
 // ========================================================
 if (game_state == state_ready) {
     var _btn_start = point_in_rectangle(mouse_x, mouse_y, 360 - 150, 780, 360 + 150, 850);
-    var _key_start = keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_left) || keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("A")) || keyboard_check_pressed(ord("D"));
+    var _key_start = keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter) || keyboard_check_pressed(vk_left) || keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("A")) || keyboard_check_pressed(ord("D"));
     
     if ((mouse_check_button_pressed(mb_left) && _btn_start) || _key_start) {
         game_state = state_playing;
-        spawn_timer = 30; // Primer item rápido
+        spawn_timer = 20; // Primer item rápido
         audio_play_sound(snd_click, 1, false);
         exit;
     }
@@ -71,30 +71,47 @@ if (game_state == state_ready) {
 // 3. ESTADO: EN JUEGO (STATE_PLAYING)
 // ========================================================
 if (game_state == state_playing) {
-    // 3.1 Controles de movimiento de Pou
-    // Teclado (Flechas o A/D)
-    if (keyboard_check(vk_left) || keyboard_check(ord("A"))) {
-        pou_target_x -= 15;
-    }
-    if (keyboard_check(vk_right) || keyboard_check(ord("D"))) {
-        pou_target_x += 15;
+    // 3.1 Pausa opcional con tecla P o ESC
+    if (keyboard_check_pressed(ord("P")) || keyboard_check_pressed(vk_escape)) {
+        game_state = state_paused;
+        audio_play_sound(snd_click, 1, false);
+        exit;
     }
     
-    // Mouse o Pantalla Táctil
-    if (mouse_check_button(mb_left) && mouse_y > 80 && mouse_y < 1200) {
-        pou_target_x = mouse_x;
+    // 3.2 Controles de movimiento de Pou (Soporte simultáneo Teclado + Mouse/Touch)
+    var _mouse_moved = (abs(mouse_x - prev_mouse_x) > 1.5);
+    
+    // Si se mueven teclas
+    if (keyboard_check(vk_left) || keyboard_check(ord("A"))) {
+        pou_target_x -= 16;
+        using_mouse = false;
     }
+    if (keyboard_check(vk_right) || keyboard_check(ord("D"))) {
+        pou_target_x += 16;
+        using_mouse = false;
+    }
+    
+    // Si se mueve o toca el mouse en el área de juego
+    if (point_in_rectangle(mouse_x, mouse_y, 0, 80, room_width, 1200)) {
+        if (_mouse_moved || mouse_check_button(mb_left)) {
+            pou_target_x = mouse_x;
+            using_mouse = true;
+        }
+    }
+    prev_mouse_x = mouse_x;
     
     // Suavizado e interpolación fluida de Pou
     pou_target_x = clamp(pou_target_x, 85, room_width - 85);
-    pou_x = lerp(pou_x, pou_target_x, 0.35);
+    pou_x = lerp(pou_x, pou_target_x, 0.40);
     
     // Animación elástica de Pou
-    pou_scale_x = lerp(pou_scale_x, pou_base_scale, 0.14);
-    pou_scale_y = lerp(pou_scale_y, pou_base_scale, 0.14);
+    pou_scale_x = lerp(pou_scale_x, pou_base_scale, 0.15);
+    pou_scale_y = lerp(pou_scale_y, pou_base_scale, 0.15);
     
-    // Timers de reacción de Pou
+    // Timers de reacción y de invulnerabilidad tras ser golpeado
     if (eat_timer > 0) eat_timer--;
+    if (invulnerable_timer > 0) invulnerable_timer--;
+    
     if (hurt_timer > 0) {
         hurt_timer--;
         head_shake_x = dsin(hurt_timer * 40) * 12;
@@ -104,9 +121,9 @@ if (game_state == state_playing) {
         pou_emotion = (eat_timer > 0) ? 1 : 1; // Feliz
     }
     
-    // 3.2 Spawner de alimentos y obstáculos
+    // 3.3 Spawner inteligente de alimentos y obstáculos
     spawn_timer++;
-    var _cur_interval = max(26, spawn_interval_base - floor(score_food * 0.65));
+    var _cur_interval = max(24, spawn_interval_base - floor(score_food * 0.65));
     if (spawn_timer >= _cur_interval) {
         spawn_timer = 0;
         
@@ -119,9 +136,18 @@ if (game_state == state_playing) {
             _spr = food_sprites[irandom(array_length(food_sprites) - 1)];
         }
         
-        var _fall_spd = fall_speed_base + min(7.5, score_food * 0.12) + random_range(-0.4, 0.6);
+        // Evitar que dos items caigan en la misma columna exacta
+        var _spawn_x = irandom_range(90, room_width - 90);
+        if (abs(_spawn_x - last_spawn_x) < 120) {
+            if (_spawn_x > room_width * 0.5) _spawn_x -= 140;
+            else _spawn_x += 140;
+            _spawn_x = clamp(_spawn_x, 90, room_width - 90);
+        }
+        last_spawn_x = _spawn_x;
+        
+        var _fall_spd = fall_speed_base + min(7.5, score_food * 0.12) + random_range(-0.3, 0.6);
         var _new_item = {
-            x: irandom_range(90, room_width - 90),
+            x: _spawn_x,
             y: -35,
             vy: _fall_spd,
             rot: random(360),
@@ -133,37 +159,58 @@ if (game_state == state_playing) {
         array_push(falling_items, _new_item);
     }
     
-    // 3.3 Movimiento y detección de colisiones de los items cayendo
+    // 3.4 Movimiento y detección de colisiones de los items cayendo
     for (var _i = array_length(falling_items) - 1; _i >= 0; _i--) {
         var _it = falling_items[_i];
         _it.y += _it.vy;
         _it.rot += _it.rot_spd;
         
-        // Colisión con la boca de Pou (pou_x, pou_y - 25)
-        var _dist = point_distance(_it.x, _it.y, pou_x, pou_y - 25);
-        if (_dist < 68) {
+        // Detección de colisión amplia y sin efecto túnel con la boca de Pou (pou_x, pou_y - 25)
+        var _dx = abs(_it.x - pou_x);
+        var _dy = _it.y - (pou_y - 28);
+        
+        if (_dx <= 82 && _dy >= -38 && _dy <= 42) {
             if (!_it.is_hazard) {
                 // ¡Comida atrapada con éxito!
                 score_food++;
+                combo++;
+                if (combo > max_combo) max_combo = combo;
+                
                 coins_earned++;
                 global.pou_monedas++;
-                global.pou_diversion = min(100, global.pou_diversion + 3);
+                global.pou_diversion = min(100, global.pou_diversion + 2.5);
                 
                 audio_play_sound(eat_sounds[irandom(array_length(eat_sounds) - 1)], 1, false);
                 
-                // Efecto de rebote elástico
+                // Efecto de rebote elástico de Pou
                 pou_scale_x = pou_base_scale * 1.35;
                 pou_scale_y = pou_base_scale * 0.82;
-                eat_timer = 20;
+                eat_timer = 18;
+                
+                // Bonificación especial por Combo cada 5 comidas consecutivas
+                if (combo mod 5 == 0) {
+                    coins_earned += 2;
+                    global.pou_monedas += 2;
+                    audio_play_sound(snd_moneda, 1, false);
+                    array_push(floating_texts, {
+                        x: pou_x,
+                        y: pou_y - 95,
+                        text: "COMBO x" + string(combo) + "! +2 Monedas",
+                        color: make_color_rgb(255, 215, 40),
+                        alpha: 1.0,
+                        vy: -2.8,
+                        scale: 1.25
+                    });
+                }
                 
                 // Texto flotante "+1"
                 array_push(floating_texts, {
                     x: pou_x,
-                    y: pou_y - 65,
+                    y: pou_y - 60,
                     text: "+1",
                     color: make_color_rgb(60, 180, 50),
                     alpha: 1.0,
-                    vy: -2.8,
+                    vy: -2.6,
                     scale: 1.35
                 });
                 
@@ -183,28 +230,35 @@ if (game_state == state_playing) {
                 array_delete(falling_items, _i, 1);
                 continue;
             } else {
-                // ¡Comió basura / zapato / herradura!
-                lives_count--;
-                audio_play_sound(snd_no, 1, false);
-                hurt_timer = 32;
-                shake_timer = 15;
-                
-                array_push(floating_texts, {
-                    x: pou_x,
-                    y: pou_y - 65,
-                    text: "-1 VIDA",
-                    color: make_color_rgb(225, 45, 45),
-                    alpha: 1.0,
-                    vy: -2.8,
-                    scale: 1.35
-                });
-                
-                array_delete(falling_items, _i, 1);
-                
-                if (lives_count <= 0) {
-                    game_state = state_gameover;
-                    audio_play_sound(snd_gameover, 1, false);
+                // Comió basura / zapato / herradura
+                if (invulnerable_timer <= 0) {
+                    lives_count--;
+                    combo = 0; // Rompe racha
+                    invulnerable_timer = 45; // 45 frames de gracia para no morir en cadena
+                    hurt_timer = 32;
+                    shake_timer = 15;
+                    audio_play_sound(snd_no, 1, false);
+                    
+                    array_push(floating_texts, {
+                        x: pou_x,
+                        y: pou_y - 65,
+                        text: "-1 VIDA",
+                        color: make_color_rgb(225, 45, 45),
+                        alpha: 1.0,
+                        vy: -2.8,
+                        scale: 1.35
+                    });
+                    
+                    if (lives_count <= 0) {
+                        game_state = state_gameover;
+                        if (score_food > global.food_drop_highscore) {
+                            global.food_drop_highscore = score_food;
+                            is_new_record = true;
+                        }
+                        audio_play_sound(snd_gameover, 1, false);
+                    }
                 }
+                array_delete(falling_items, _i, 1);
                 continue;
             }
         }
@@ -214,6 +268,7 @@ if (game_state == state_playing) {
             if (!_it.is_hazard) {
                 // Comida que cayó sin atrapar
                 lives_count--;
+                combo = 0; // Rompe racha
                 audio_play_sound(snd_caida, 1, false);
                 shake_timer = 10;
                 
@@ -231,6 +286,10 @@ if (game_state == state_playing) {
                 
                 if (lives_count <= 0) {
                     game_state = state_gameover;
+                    if (score_food > global.food_drop_highscore) {
+                        global.food_drop_highscore = score_food;
+                        is_new_record = true;
+                    }
                     audio_play_sound(snd_gameover, 1, false);
                 }
                 continue;
@@ -244,7 +303,34 @@ if (game_state == state_playing) {
 }
 
 // ========================================================
-// 4. ESTADO: JUEGO TERMINADO (STATE_GAMEOVER)
+// 4. ESTADO: PAUSA (STATE_PAUSED)
+// ========================================================
+if (game_state == state_paused) {
+    var _btn_resume = point_in_rectangle(mouse_x, mouse_y, 360 - 150, 580, 360 + 150, 645);
+    var _btn_quit   = point_in_rectangle(mouse_x, mouse_y, 360 - 150, 665, 360 + 150, 730);
+    
+    if (keyboard_check_pressed(ord("P")) || keyboard_check_pressed(vk_escape)) {
+        game_state = state_playing;
+        audio_play_sound(snd_click, 1, false);
+        exit;
+    }
+    
+    if (mouse_check_button_pressed(mb_left)) {
+        if (_btn_resume) {
+            game_state = state_playing;
+            audio_play_sound(snd_click, 1, false);
+            exit;
+        }
+        if (_btn_quit) {
+            audio_play_sound(snd_click, 1, false);
+            room_goto(rm_sala);
+            exit;
+        }
+    }
+}
+
+// ========================================================
+// 5. ESTADO: JUEGO TERMINADO (STATE_GAMEOVER)
 // ========================================================
 if (game_state == state_gameover) {
     pou_emotion = 3; // Triste
@@ -255,9 +341,11 @@ if (game_state == state_gameover) {
         score_food = 0;
         coins_earned = 0;
         lives_count = max_lives;
+        combo = 0;
         falling_items = [];
         particles = [];
         floating_texts = [];
+        is_new_record = false;
         pou_emotion = 1;
         game_state = state_playing;
         audio_play_sound(snd_click, 1, false);
