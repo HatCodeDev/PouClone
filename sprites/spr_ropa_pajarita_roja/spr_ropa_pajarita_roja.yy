@@ -1,5 +1,5 @@
 {
-  "":"v2",
+  "$GMSprite":"v2",
   "%Name":"spr_ropa_pajarita_roja",
   "bboxMode":0,
   "bbox_bottom":89,
@@ -12,14 +12,14 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"":"v1","%Name":"151f75c8-9a0b-413c-a060-807662160c7f","name":"151f75c8-9a0b-413c-a060-807662160c7f","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"151f75c8-9a0b-413c-a060-807662160c7f","name":"151f75c8-9a0b-413c-a060-807662160c7f","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,
   "height":90,
   "HTile":false,
   "layers":[
-    {"":"","%Name":"a567cdd9-ad04-43c5-b2ca-7df1c2198715","blendMode":0,"displayName":"default","isLocked":false,"name":"a567cdd9-ad04-43c5-b2ca-7df1c2198715","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
+    {"$GMImageLayer":"","%Name":"a567cdd9-ad04-43c5-b2ca-7df1c2198715","blendMode":0,"displayName":"default","isLocked":false,"name":"a567cdd9-ad04-43c5-b2ca-7df1c2198715","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
   ],
   "name":"spr_ropa_pajarita_roja",
   "nineSlice":null,
@@ -32,7 +32,7 @@
   "resourceType":"GMSprite",
   "resourceVersion":"2.0",
   "sequence":{
-    "":"v1",
+    "$GMSequence":"v1",
     "%Name":"spr_ropa_pajarita_roja",
     "autoRecord":true,
     "backdropHeight":768,
@@ -42,7 +42,7 @@
     "backdropXOffset":0.0,
     "backdropYOffset":0.0,
     "events":{
-      "<MessageEventKeyframe>":"",
+      "$KeyframeStore<MessageEventKeyframe>":"",
       "Keyframes":[],
       "resourceType":"KeyframeStore<MessageEventKeyframe>",
       "resourceVersion":"2.0",
@@ -52,7 +52,7 @@
     "length":1.0,
     "lockOrigin":false,
     "moments":{
-      "<MomentsEventKeyframe>":"",
+      "$KeyframeStore<MomentsEventKeyframe>":"",
       "Keyframes":[],
       "resourceType":"KeyframeStore<MomentsEventKeyframe>",
       "resourceVersion":"2.0",
@@ -67,9 +67,9 @@
     "showBackdropImage":false,
     "timeUnits":1,
     "tracks":[
-      {"":"","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"<SpriteFrameKeyframe>":"","Keyframes":[
-            {"<SpriteFrameKeyframe>":"","Channels":{
-                "0":{"":"","Id":{"name":"151f75c8-9a0b-413c-a060-807662160c7f","path":"sprites/spr_ropa_pajarita_roja/spr_ropa_pajarita_roja.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
+      {"$GMSpriteFramesTrack":"","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<SpriteFrameKeyframe>":"","Keyframes":[
+            {"$Keyframe<SpriteFrameKeyframe>":"","Channels":{
+                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"151f75c8-9a0b-413c-a060-807662160c7f","path":"sprites/spr_ropa_pajarita_roja/spr_ropa_pajarita_roja.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
               },"Disabled":false,"id":"cd2b4ee8-b3bd-4421-8d83-bdd572b0a3e4","IsCreationKey":false,"Key":0.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
           ],"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"2.0",},"modifiers":[],"name":"frames","resourceType":"GMSpriteFramesTrack","resourceVersion":"2.0","spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],

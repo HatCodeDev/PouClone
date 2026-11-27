@@ -1,5 +1,5 @@
 {
-  "":"v2",
+  "$GMSprite":"v2",
   "%Name":"spr_sombrero_copa",
   "bboxMode":0,
   "bbox_bottom":149,
@@ -12,14 +12,14 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"":"v1","%Name":"2c63c64f-b165-41ca-b88e-0fe1595e0987","name":"2c63c64f-b165-41ca-b88e-0fe1595e0987","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"2c63c64f-b165-41ca-b88e-0fe1595e0987","name":"2c63c64f-b165-41ca-b88e-0fe1595e0987","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,
   "height":150,
   "HTile":false,
   "layers":[
-    {"":"","%Name":"48983e66-d9e2-4fb5-89c2-ad91a73a456c","blendMode":0,"displayName":"default","isLocked":false,"name":"48983e66-d9e2-4fb5-89c2-ad91a73a456c","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
+    {"$GMImageLayer":"","%Name":"48983e66-d9e2-4fb5-89c2-ad91a73a456c","blendMode":0,"displayName":"default","isLocked":false,"name":"48983e66-d9e2-4fb5-89c2-ad91a73a456c","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
   ],
   "name":"spr_sombrero_copa",
   "nineSlice":null,
@@ -32,7 +32,7 @@
   "resourceType":"GMSprite",
   "resourceVersion":"2.0",
   "sequence":{
-    "":"v1",
+    "$GMSequence":"v1",
     "%Name":"spr_sombrero_copa",
     "autoRecord":true,
     "backdropHeight":768,
@@ -42,7 +42,7 @@
     "backdropXOffset":0.0,
     "backdropYOffset":0.0,
     "events":{
-      "<MessageEventKeyframe>":"",
+      "$KeyframeStore<MessageEventKeyframe>":"",
       "Keyframes":[],
       "resourceType":"KeyframeStore<MessageEventKeyframe>",
       "resourceVersion":"2.0",
@@ -52,7 +52,7 @@
     "length":1.0,
     "lockOrigin":false,
     "moments":{
-      "<MomentsEventKeyframe>":"",
+      "$KeyframeStore<MomentsEventKeyframe>":"",
       "Keyframes":[],
       "resourceType":"KeyframeStore<MomentsEventKeyframe>",
       "resourceVersion":"2.0",
@@ -67,9 +67,9 @@
     "showBackdropImage":false,
     "timeUnits":1,
     "tracks":[
-      {"":"","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"<SpriteFrameKeyframe>":"","Keyframes":[
-            {"<SpriteFrameKeyframe>":"","Channels":{
-                "0":{"":"","Id":{"name":"2c63c64f-b165-41ca-b88e-0fe1595e0987","path":"sprites/spr_sombrero_copa/spr_sombrero_copa.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
+      {"$GMSpriteFramesTrack":"","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<SpriteFrameKeyframe>":"","Keyframes":[
+            {"$Keyframe<SpriteFrameKeyframe>":"","Channels":{
+                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"2c63c64f-b165-41ca-b88e-0fe1595e0987","path":"sprites/spr_sombrero_copa/spr_sombrero_copa.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
               },"Disabled":false,"id":"d240f07c-d78b-483b-8539-8b93f9c713bc","IsCreationKey":false,"Key":0.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
           ],"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"2.0",},"modifiers":[],"name":"frames","resourceType":"GMSpriteFramesTrack","resourceVersion":"2.0","spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
