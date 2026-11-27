@@ -335,47 +335,47 @@ if (game_state == state_ready) {
     draw_rectangle(0, 0, room_width, room_height, false);
     draw_set_alpha(1.0);
     
-    var _rw1 = 55;
-    var _ry1 = 230;
-    var _rw2 = 665;
-    var _ry2 = 910;
+    var _ready_w1 = 55;
+    var _ready_y1 = 230;
+    var _ready_w2 = 665;
+    var _ready_y2 = 910;
     
     draw_set_color(_c_pou_shadow);
-    draw_roundrect(_rw1 + 3, _ry1 + 5, _rw2 + 3, _ry2 + 5, false);
+    draw_roundrect(_ready_w1 + 3, _ready_y1 + 5, _ready_w2 + 3, _ready_y2 + 5, false);
     draw_set_color(_c_pou_pill);
-    draw_roundrect(_rw1, _ry1, _rw2, _ry2, false);
+    draw_roundrect(_ready_w1, _ready_y1, _ready_w2, _ready_y2, false);
     draw_set_color(_c_pou_border);
-    draw_roundrect(_rw1, _ry1, _rw2, _ry2, true);
+    draw_roundrect(_ready_w1, _ready_y1, _ready_w2, _ready_y2, true);
     
     // Título
     draw_set_halign(fa_center);
     draw_set_valign(fa_top);
     draw_set_color(_c_pou_text);
-    draw_text_transformed(360, _ry1 + 30, "JUEGO DE MEMORIA", 1.65, 1.65, 0);
+    draw_text_transformed(360, _ready_y1 + 30, "JUEGO DE MEMORIA", 1.65, 1.65, 0);
     draw_set_color(make_color_rgb(140, 110, 80));
-    draw_text_transformed(360, _ry1 + 72, "(Memory Match)", 1.15, 1.15, 0);
+    draw_text_transformed(360, _ready_y1 + 72, "(Memory Match)", 1.15, 1.15, 0);
     
     // Récord actual
     if (global.memory_best_moves > 0) {
         draw_set_color(make_color_rgb(220, 140, 20));
-        draw_text_transformed(360, _ry1 + 108, "Mejor Record: " + string(global.memory_best_moves) + " intentos", 1.15, 1.15, 0);
+        draw_text_transformed(360, _ready_y1 + 108, "Mejor Record: " + string(global.memory_best_moves) + " intentos", 1.15, 1.15, 0);
     }
     
     // Decoración de cartas
     var _fl = dsin(anim_t * 3) * 6;
-    draw_sprite_ext(spr_carta_atras, 0, 200, _ry1 + 185 + _fl, 0.95, 0.95, -10, c_white, 1);
-    draw_sprite_ext(spr_carta_frente, 0, 360, _ry1 + 185 - _fl, 0.95, 0.95, 0, c_white, 1);
-    draw_sprite_ext(spr_game_avion, 0, 360, _ry1 + 185 - _fl, 0.85, 0.85, 0, c_white, 1);
-    draw_sprite_ext(spr_carta_frente, 0, 520, _ry1 + 185 + _fl, 0.95, 0.95, 10, c_white, 1);
-    draw_sprite_ext(spr_food_apple, 0, 520, _ry1 + 185 + _fl, 0.85, 0.85, 10, c_white, 1);
+    draw_sprite_ext(spr_carta_atras, 0, 200, _ready_y1 + 185 + _fl, 0.95, 0.95, -10, c_white, 1);
+    draw_sprite_ext(spr_carta_frente, 0, 360, _ready_y1 + 185 - _fl, 0.95, 0.95, 0, c_white, 1);
+    draw_sprite_ext(spr_game_avion, 0, 360, _ready_y1 + 185 - _fl, 0.85, 0.85, 0, c_white, 1);
+    draw_sprite_ext(spr_carta_frente, 0, 520, _ready_y1 + 185 + _fl, 0.95, 0.95, 10, c_white, 1);
+    draw_sprite_ext(spr_food_apple, 0, 520, _ready_y1 + 185 + _fl, 0.85, 0.85, 10, c_white, 1);
     
     // Instrucciones en texto limpio ASCII
     draw_set_color(make_color_rgb(90, 75, 60));
-    draw_text_transformed(360, _ry1 + 295, "* Toca dos cartas para voltearlas", 1.2, 1.2, 0);
-    draw_text_transformed(360, _ry1 + 340, "* Encuentra las 8 parejas de figuras iguales", 1.1, 1.1, 0);
-    draw_text_transformed(360, _ry1 + 385, "* Ganas +5 Monedas por cada pareja acertada!", 1.15, 1.15, 0);
-    draw_text_transformed(360, _ry1 + 430, "* Bonificacion de +10 Monedas al completar el tablero!", 1.05, 1.05, 0);
-    draw_text_transformed(360, _ry1 + 475, "* Aumenta la DIVERSION de Pou al 100%!", 1.1, 1.1, 0);
+    draw_text_transformed(360, _ready_y1 + 295, "* Toca dos cartas para voltearlas", 1.2, 1.2, 0);
+    draw_text_transformed(360, _ready_y1 + 340, "* Encuentra las 8 parejas de figuras iguales", 1.1, 1.1, 0);
+    draw_text_transformed(360, _ready_y1 + 385, "* Ganas +5 Monedas por cada pareja acertada!", 1.15, 1.15, 0);
+    draw_text_transformed(360, _ready_y1 + 430, "* Bonificacion de +10 Monedas al completar el tablero!", 1.05, 1.05, 0);
+    draw_text_transformed(360, _ready_y1 + 475, "* Aumenta la DIVERSION de Pou al 100%!", 1.1, 1.1, 0);
     
     // Botón Empezar
     var _btn_s_x1 = 200;

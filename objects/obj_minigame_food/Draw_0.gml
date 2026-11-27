@@ -321,22 +321,22 @@ if (game_state == state_paused) {
     draw_rectangle(0, 0, room_width, room_height, false);
     draw_set_alpha(1.0);
     
-    var _pw1 = 120;
-    var _py1 = 440;
-    var _pw2 = 600;
-    var _py2 = 780;
+    var _pbox_x1 = 120;
+    var _pbox_y1 = 440;
+    var _pbox_x2 = 600;
+    var _pbox_y2 = 780;
     
     draw_set_color(_c_pou_shadow);
-    draw_roundrect(_pw1 + 3, _py1 + 5, _pw2 + 3, _py2 + 5, false);
+    draw_roundrect(_pbox_x1 + 3, _pbox_y1 + 5, _pbox_x2 + 3, _pbox_y2 + 5, false);
     draw_set_color(_c_pou_pill);
-    draw_roundrect(_pw1, _py1, _pw2, _py2, false);
+    draw_roundrect(_pbox_x1, _pbox_y1, _pbox_x2, _pbox_y2, false);
     draw_set_color(_c_pou_border);
-    draw_roundrect(_pw1, _py1, _pw2, _py2, true);
+    draw_roundrect(_pbox_x1, _pbox_y1, _pbox_x2, _pbox_y2, true);
     
     draw_set_halign(fa_center);
     draw_set_valign(fa_top);
     draw_set_color(_c_pou_text);
-    draw_text_transformed(360, _py1 + 35, "JUEGO EN PAUSA", 1.6, 1.6, 0);
+    draw_text_transformed(360, _pbox_y1 + 35, "JUEGO EN PAUSA", 1.6, 1.6, 0);
     
     // Botón Continuar
     var _pr_x1 = 360 - 140; var _pr_y1 = 580; var _pr_x2 = 360 + 140; var _pr_y2 = 645;
