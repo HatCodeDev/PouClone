@@ -71,7 +71,7 @@ if (global.pou_suciedad > 0 && variable_global_exists("pou_dirt_spots")) {
 if (room == rm_dormitorio && variable_global_exists("pou_lamp_on") && !global.pou_lamp_on) {
     var _px = x + head_shake_x;
     var _py = y + jump_y;
-    var _eye_y = _py - 228 * (_sy / base_scale);
+    var _eye_y = _py - 228.5 * _sy;
     draw_set_color(make_color_rgb(52, 36, 20));
     // Curvas suaves de párpados cerrados sobre los ojos reales de Pou
     draw_line_width(_px - 46, _eye_y, _px - 8, _eye_y, 4.5);
@@ -79,23 +79,43 @@ if (room == rm_dormitorio && variable_global_exists("pou_lamp_on") && !global.po
     draw_set_color(c_white);
 }
 
-// Dibujo de Accesorios equipados (Lentes y Sombrero) optimizados al tamaño de Pou
-if (variable_global_exists("pou_lentes") && global.pou_lentes != -1) {
-    // Lentes centrados con precisión milimétrica sobre las cuencas oculares de Pou
-    draw_sprite_ext(global.pou_lentes, 0, x + head_shake_x, y + jump_y - 228 * (_sy / base_scale), _sx * 0.70, _sy * 0.70, 0, c_white, 1);
+// Dibujo de Accesorios equipados (Ropa, Bigote, Lentes y Sombrero) optimizados al tamaño de Pou
+// 1. Ropa / Pajarita (en el cuello/pecho de Pou)
+if (variable_global_exists("pou_ropa") && global.pou_ropa != -1) {
+    draw_sprite_ext(global.pou_ropa, 0, x + head_shake_x, y + jump_y - 95 * _sy, _sx * 0.85, _sy * 0.85, 0, c_white, 1);
 }
+
+// 2. Bigote (entre la boca y los ojos)
+if (variable_global_exists("pou_bigote") && global.pou_bigote != -1) {
+    draw_sprite_ext(global.pou_bigote, 0, x + head_shake_x, y + jump_y - 173 * _sy, _sx * 0.75, _sy * 0.75, 0, c_white, 1);
+}
+
+// 3. Lentes (centrados exactamente sobre las cuencas oculares)
+if (variable_global_exists("pou_lentes") && global.pou_lentes != -1) {
+    draw_sprite_ext(global.pou_lentes, 0, x + head_shake_x, y + jump_y - 228.5 * _sy, _sx * 0.72, _sy * 0.72, 0, c_white, 1);
+}
+
+// 4. Sombrero (ajustado en la corona superior de la cabeza)
 if (variable_global_exists("pou_sombrero") && global.pou_sombrero != -1) {
-    // Ajuste individual de altura y proporción según el modelo del sombrero
-    var _hat_y_off = 332;
-    var _hat_scale = 0.75;
-    if (global.pou_sombrero == spr_sombrero_bruja) {
-        _hat_y_off = 358;
-        _hat_scale = 0.80;
-    } else if (global.pou_sombrero == spr_sombrero_negro) {
+    var _hat_y_off = 330;
+    var _hat_scale = 0.78;
+    if (global.pou_sombrero == spr_sombrero_bruja || global.pou_sombrero == spr_sombrero_fiesta) {
         _hat_y_off = 345;
+        _hat_scale = 0.80;
+    } else if (global.pou_sombrero == spr_sombrero_copa) {
+        _hat_y_off = 320;
+        _hat_scale = 0.76;
+    } else if (global.pou_sombrero == spr_sombrero_lana) {
+        _hat_y_off = 325;
+        _hat_scale = 0.78;
+    } else if (global.pou_sombrero == spr_sombrero_azul) {
+        _hat_y_off = 330;
+        _hat_scale = 0.76;
+    } else if (global.pou_sombrero == spr_sombrero_negro) {
+        _hat_y_off = 330;
         _hat_scale = 0.78;
     }
-    draw_sprite_ext(global.pou_sombrero, 0, x + head_shake_x, y + jump_y - _hat_y_off * (_sy / base_scale), _sx * _hat_scale, _sy * _hat_scale, 0, c_white, 1);
+    draw_sprite_ext(global.pou_sombrero, 0, x + head_shake_x, y + jump_y - _hat_y_off * _sy, _sx * _hat_scale, _sy * _hat_scale, 0, c_white, 1);
 }
 
 // Dibujar los botones de cambio de emoción ÚNICAMENTE en la sala (rm_sala)

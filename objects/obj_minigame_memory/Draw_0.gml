@@ -112,21 +112,42 @@ draw_set_alpha(1.0);
 // Dibujo de Pou con salto animado
 draw_sprite_ext(spr_pou_emociones, pou_emotion, pou_x, pou_y + pou_jump_y, pou_scale, pou_scale, 0, c_white, 1);
 
-// Lentes equipados
-if (variable_global_exists("pou_lentes") && global.pou_lentes != -1) {
-    var _glasses_y = pou_y + pou_jump_y - 228 * pou_scale;
-    draw_sprite_ext(global.pou_lentes, 0, pou_x, _glasses_y, pou_scale * 0.70, pou_scale * 0.70, 0, c_white, 1);
+// 1. Ropa / Pajarita
+if (variable_global_exists("pou_ropa") && global.pou_ropa != -1) {
+    var _ropa_y = pou_y + pou_jump_y - 95 * pou_scale;
+    draw_sprite_ext(global.pou_ropa, 0, pou_x, _ropa_y, pou_scale * 0.85, pou_scale * 0.85, 0, c_white, 1);
 }
 
-// Sombrero equipado
+// 2. Bigote
+if (variable_global_exists("pou_bigote") && global.pou_bigote != -1) {
+    var _bigote_y = pou_y + pou_jump_y - 173 * pou_scale;
+    draw_sprite_ext(global.pou_bigote, 0, pou_x, _bigote_y, pou_scale * 0.75, pou_scale * 0.75, 0, c_white, 1);
+}
+
+// 3. Lentes equipados
+if (variable_global_exists("pou_lentes") && global.pou_lentes != -1) {
+    var _glasses_y = pou_y + pou_jump_y - 228.5 * pou_scale;
+    draw_sprite_ext(global.pou_lentes, 0, pou_x, _glasses_y, pou_scale * 0.72, pou_scale * 0.72, 0, c_white, 1);
+}
+
+// 4. Sombrero equipado
 if (variable_global_exists("pou_sombrero") && global.pou_sombrero != -1) {
-    var _hat_y_off = 332;
-    var _hat_scale = 0.75;
-    if (global.pou_sombrero == spr_sombrero_bruja) {
-        _hat_y_off = 358;
-        _hat_scale = 0.80;
-    } else if (global.pou_sombrero == spr_sombrero_negro) {
+    var _hat_y_off = 330;
+    var _hat_scale = 0.78;
+    if (global.pou_sombrero == spr_sombrero_bruja || global.pou_sombrero == spr_sombrero_fiesta) {
         _hat_y_off = 345;
+        _hat_scale = 0.80;
+    } else if (global.pou_sombrero == spr_sombrero_copa) {
+        _hat_y_off = 320;
+        _hat_scale = 0.76;
+    } else if (global.pou_sombrero == spr_sombrero_lana) {
+        _hat_y_off = 325;
+        _hat_scale = 0.78;
+    } else if (global.pou_sombrero == spr_sombrero_azul) {
+        _hat_y_off = 330;
+        _hat_scale = 0.76;
+    } else if (global.pou_sombrero == spr_sombrero_negro) {
+        _hat_y_off = 330;
         _hat_scale = 0.78;
     }
     draw_sprite_ext(global.pou_sombrero, 0, pou_x, pou_y + pou_jump_y - _hat_y_off * pou_scale, pou_scale * _hat_scale, pou_scale * _hat_scale, 0, c_white, 1);

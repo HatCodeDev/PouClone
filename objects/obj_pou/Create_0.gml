@@ -44,6 +44,8 @@ if (!variable_global_exists("pou_dirt_spots")) {
 // Accesorios del armario y estado de la lámpara del dormitorio
 if (!variable_global_exists("pou_sombrero")) global.pou_sombrero = -1;
 if (!variable_global_exists("pou_lentes")) global.pou_lentes = -1;
+if (!variable_global_exists("pou_ropa")) global.pou_ropa = -1;
+if (!variable_global_exists("pou_bigote")) global.pou_bigote = -1;
 if (!variable_global_exists("pou_lamp_on")) global.pou_lamp_on = true;
 
 /// @function cambiar_emocion(_emocion)

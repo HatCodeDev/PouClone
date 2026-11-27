@@ -5,6 +5,8 @@ if (!variable_global_exists("pou_monedas")) global.pou_monedas = 250;
 if (!variable_global_exists("pou_diversion")) global.pou_diversion = 80;
 if (!variable_global_exists("pou_sombrero")) global.pou_sombrero = -1;
 if (!variable_global_exists("pou_lentes")) global.pou_lentes = -1;
+if (!variable_global_exists("pou_ropa")) global.pou_ropa = -1;
+if (!variable_global_exists("pou_bigote")) global.pou_bigote = -1;
 if (!variable_global_exists("food_drop_highscore")) global.food_drop_highscore = 0;
 
 // Ajuste de ventana para escritorio

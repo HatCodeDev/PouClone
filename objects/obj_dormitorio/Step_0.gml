@@ -18,6 +18,8 @@ if (!closet_open) {
         // Clic en el Armario (Abrir menú de ropa)
         if (point_distance(mouse_x, mouse_y, closet_x, closet_y) <= 55) {
             closet_open = true;
+            closet_page = 0;
+            preview_bounce = 0.6;
             audio_play_sound(snd_click, 1, false);
             exit;
         }
@@ -46,64 +48,136 @@ if (!closet_open) {
 }
 
 // ========================================================
-// 2. GESTIÓN DEL MODAL DEL ARMARIO (Equipar sombreros y lentes)
+// 2. GESTIÓN DEL MODAL DEL ARMARIO Y PROBADOR EN VIVO
 // ========================================================
 if (closet_open) {
+    // Animación de rebote suave de Pou en el probador
+    if (preview_bounce > 0) {
+        preview_bounce = max(0, preview_bounce - 0.05);
+    }
+    
     if (mouse_check_button_pressed(mb_left)) {
-        // Botón Cerrar "X"
-        if (point_distance(mouse_x, mouse_y, 652, 65) <= 28) {
+        // Botón Cerrar "X" superior derecho
+        if (point_distance(mouse_x, mouse_y, 652, 65) <= 26) {
             closet_open = false;
             audio_play_sound(snd_click, 1, false);
             exit;
         }
         
         // Botón inferior "Volver al Dormitorio"
-        if (point_in_rectangle(mouse_x, mouse_y, 360 - 160, 1150, 360 + 160, 1204)) {
+        if (point_in_rectangle(mouse_x, mouse_y, 180, 1180, 540, 1236)) {
             closet_open = false;
             audio_play_sound(snd_click, 1, false);
             exit;
         }
         
-        // Pestañas: 0: Sombreros, 1: Lentes
-        if (point_in_rectangle(mouse_x, mouse_y, 60, 120, 340, 165)) {
-            closet_tab = 0;
-            audio_play_sound(snd_click, 1, false);
-            exit;
-        }
-        if (point_in_rectangle(mouse_x, mouse_y, 380, 120, 660, 165)) {
-            closet_tab = 1;
-            audio_play_sound(snd_click, 1, false);
+        // Botón "Desvestir Todo"
+        if (point_in_rectangle(mouse_x, mouse_y, 490, 105, 675, 145)) {
+            global.pou_sombrero = -1;
+            global.pou_lentes = -1;
+            global.pou_ropa = -1;
+            global.pou_bigote = -1;
+            preview_bounce = 1.0;
+            audio_play_sound(snd_shuffle, 1, false);
             exit;
         }
         
-        // Selección de Sombreros (Pestaña 0)
-        if (closet_tab == 0) {
-            for (var _i = 0; _i < array_length(sombreros); _i++) {
-                var _card_x = (_i mod 2 == 0) ? 60 : 380;
-                var _card_y = 200 + floor(_i / 2) * 220;
-                var _card_w = 280;
-                var _card_h = 190;
+        // Pestañas de categorías: 0: Sombreros, 1: Lentes, 2: Ropa, 3: Bigotes (y: 515..560)
+        if (point_in_rectangle(mouse_x, mouse_y, 36, 515, 188, 560)) {
+            if (closet_tab != 0) { closet_tab = 0; closet_page = 0; audio_play_sound(snd_click, 1, false); }
+            exit;
+        }
+        if (point_in_rectangle(mouse_x, mouse_y, 194, 515, 346, 560)) {
+            if (closet_tab != 1) { closet_tab = 1; closet_page = 0; audio_play_sound(snd_click, 1, false); }
+            exit;
+        }
+        if (point_in_rectangle(mouse_x, mouse_y, 352, 515, 504, 560)) {
+            if (closet_tab != 2) { closet_tab = 2; closet_page = 0; audio_play_sound(snd_click, 1, false); }
+            exit;
+        }
+        if (point_in_rectangle(mouse_x, mouse_y, 510, 515, 662, 560)) {
+            if (closet_tab != 3) { closet_tab = 3; closet_page = 0; audio_play_sound(snd_click, 1, false); }
+            exit;
+        }
+        
+        // Obtener la lista activa según la pestaña
+        var _items = sombreros;
+        if (closet_tab == 1) _items = lentes;
+        else if (closet_tab == 2) _items = ropas;
+        else if (closet_tab == 3) _items = bigotes;
+        
+        var _start_idx = closet_page * 6;
+        var _end_idx = min(array_length(_items), _start_idx + 6);
+        
+        // Clic en las tarjetas del catálogo
+        for (var _k = _start_idx; _k < _end_idx; _k++) {
+            var _local_i = _k - _start_idx;
+            var _card_x = (_local_i mod 2 == 0) ? 45 : 365;
+            var _card_y = 575 + floor(_local_i / 2) * 185;
+            var _card_w = 310;
+            var _card_h = 175;
+            
+            if (point_in_rectangle(mouse_x, mouse_y, _card_x, _card_y, _card_x + _card_w, _card_y + _card_h)) {
+                var _spr = _items[_k].sprite;
                 
-                if (point_in_rectangle(mouse_x, mouse_y, _card_x, _card_y, _card_x + _card_w, _card_y + _card_h)) {
-                    global.pou_sombrero = sombreros[_i].sprite;
-                    audio_play_sound(snd_pocion, 1, false);
-                    exit;
+                if (closet_tab == 0) {
+                    if (global.pou_sombrero == _spr && _spr != -1) {
+                        global.pou_sombrero = -1;
+                        audio_play_sound(snd_click, 1, false);
+                        preview_bounce = 0.5;
+                    } else {
+                        global.pou_sombrero = _spr;
+                        audio_play_sound(snd_pocion, 1, false);
+                        preview_bounce = 1.0;
+                    }
+                } else if (closet_tab == 1) {
+                    if (global.pou_lentes == _spr && _spr != -1) {
+                        global.pou_lentes = -1;
+                        audio_play_sound(snd_click, 1, false);
+                        preview_bounce = 0.5;
+                    } else {
+                        global.pou_lentes = _spr;
+                        audio_play_sound(snd_pocion, 1, false);
+                        preview_bounce = 1.0;
+                    }
+                } else if (closet_tab == 2) {
+                    if (global.pou_ropa == _spr && _spr != -1) {
+                        global.pou_ropa = -1;
+                        audio_play_sound(snd_click, 1, false);
+                        preview_bounce = 0.5;
+                    } else {
+                        global.pou_ropa = _spr;
+                        audio_play_sound(snd_pocion, 1, false);
+                        preview_bounce = 1.0;
+                    }
+                } else if (closet_tab == 3) {
+                    if (global.pou_bigote == _spr && _spr != -1) {
+                        global.pou_bigote = -1;
+                        audio_play_sound(snd_click, 1, false);
+                        preview_bounce = 0.5;
+                    } else {
+                        global.pou_bigote = _spr;
+                        audio_play_sound(snd_pocion, 1, false);
+                        preview_bounce = 1.0;
+                    }
                 }
+                exit;
             }
         }
-        // Selección de Lentes (Pestaña 1)
-        else if (closet_tab == 1) {
-            for (var _j = 0; _j < array_length(lentes); _j++) {
-                var _card_x = (_j mod 2 == 0) ? 60 : 380;
-                var _card_y = 200 + floor(_j / 2) * 220;
-                var _card_w = 280;
-                var _card_h = 190;
-                
-                if (point_in_rectangle(mouse_x, mouse_y, _card_x, _card_y, _card_x + _card_w, _card_y + _card_h)) {
-                    global.pou_lentes = lentes[_j].sprite;
-                    audio_play_sound(snd_pocion, 1, false);
-                    exit;
-                }
+        
+        // Flechas de paginación si hay más de 6 ítems
+        if (array_length(_items) > 6) {
+            // Flecha izquierda
+            if (point_in_rectangle(mouse_x, mouse_y, 220, 1130, 290, 1170) && closet_page > 0) {
+                closet_page--;
+                audio_play_sound(snd_click, 1, false);
+                exit;
+            }
+            // Flecha derecha
+            if (point_in_rectangle(mouse_x, mouse_y, 430, 1130, 500, 1170) && (_start_idx + 6) < array_length(_items)) {
+                closet_page++;
+                audio_play_sound(snd_click, 1, false);
+                exit;
             }
         }
     }
