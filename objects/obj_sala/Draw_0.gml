@@ -81,11 +81,11 @@ if (games_menu_open) {
     draw_rectangle(0, 0, room_width, room_height, false);
     draw_set_alpha(1);
     
-    // 2.2 Ventana modal principal
-    var _mx1 = 20;
-    var _my1 = 20;
-    var _mx2 = 700;
-    var _my2 = 1225;
+    // 2.2 Ventana modal principal (Dimensiones elegantes y perfectamente centradas)
+    var _mx1 = 35;
+    var _my1 = 45;
+    var _mx2 = 685;
+    var _my2 = 1120;
     
     // Sombra del contenedor
     draw_set_color(_c_pou_shadow);
@@ -101,14 +101,14 @@ if (games_menu_open) {
     draw_set_halign(fa_left);
     draw_set_valign(fa_middle);
     draw_set_color(_c_pou_text);
-    draw_text_transformed(55, 60, "Sala de Videojuegos", 1.55, 1.55, 0);
+    draw_text_transformed(65, 80, "Sala de Videojuegos", 1.55, 1.55, 0);
     
     draw_set_color(make_color_rgb(115, 95, 75));
-    draw_text_transformed(55, 90, "Juega con Pou para divertirte y ganar monedas", 1.05, 1.05, 0);
+    draw_text_transformed(65, 110, "Juega con Pou para divertirte y ganar monedas", 1.05, 1.05, 0);
     
     // Contador de Monedas en cabecera
-    var _coin_box_x = 450;
-    var _coin_box_y = 60;
+    var _coin_box_x = 440;
+    var _coin_box_y = 80;
     draw_set_color(_c_pou_shadow);
     draw_roundrect(_coin_box_x, _coin_box_y - 18, _coin_box_x + 120, _coin_box_y + 18, false);
     draw_set_color(_c_pou_pill);
@@ -122,36 +122,36 @@ if (games_menu_open) {
     draw_text_transformed(_coin_box_x + 72, _coin_box_y - 2, string(global.pou_monedas), 1.25, 1.25, 0);
     
     // Botón Cerrar "X"
-    var _h_close = point_distance(mouse_x, mouse_y, 652, 65) <= 24;
+    var _h_close = point_distance(mouse_x, mouse_y, 642, 80) <= 24;
     draw_set_color(_h_close ? make_color_rgb(255, 210, 210) : _c_pou_pill);
-    draw_circle(652, 65, 24, false);
+    draw_circle(642, 80, 24, false);
     draw_set_color(_c_pou_border);
-    draw_circle(652, 65, 24, true);
+    draw_circle(642, 80, 24, true);
     draw_set_color(make_color_rgb(180, 40, 40));
     draw_set_halign(fa_center);
-    draw_text_transformed(652, 65, "X", 1.5, 1.5, 0);
+    draw_text_transformed(642, 80, "X", 1.5, 1.5, 0);
     
     // Banner de feedback al seleccionar
     if (feedback_timer > 0) {
         var _fb_alpha = min(1, feedback_timer / 20);
         draw_set_alpha(_fb_alpha);
         draw_set_color(make_color_rgb(220, 245, 215));
-        draw_roundrect(50, 120, 670, 168, false);
+        draw_roundrect(55, 135, 665, 180, false);
         draw_set_color(_c_pou_green);
-        draw_roundrect(50, 120, 670, 168, true);
+        draw_roundrect(55, 135, 665, 180, true);
         draw_set_color(make_color_rgb(40, 110, 30));
         draw_set_halign(fa_center);
-        draw_text_transformed(360, 144, feedback_msg, 1.2, 1.2, 0);
+        draw_text_transformed(360, 157, feedback_msg, 1.2, 1.2, 0);
         draw_set_alpha(1);
     }
     
     // ========================================================
     // 2.4 TARJETA 1: ATRAPAR COMIDA (Food Drop)
     // ========================================================
-    var _c1_x1 = 50;
-    var _c1_y1 = 190;
-    var _c1_x2 = 670;
-    var _c1_y2 = 440;
+    var _c1_x1 = 55;
+    var _c1_y1 = 145;
+    var _c1_x2 = 665;
+    var _c1_y2 = 410;
     var _h_c1 = point_in_rectangle(mouse_x, mouse_y, _c1_x1, _c1_y1, _c1_x2, _c1_y2);
     
     // Sombra y fondo de tarjeta 1
@@ -165,7 +165,7 @@ if (games_menu_open) {
     // Escuadro de vista previa izquierda (Ilustración temática)
     var _prev1_x1 = _c1_x1 + 16;
     var _prev1_y1 = _c1_y1 + 16;
-    var _prev1_x2 = _prev1_x1 + 160;
+    var _prev1_x2 = _prev1_x1 + 150;
     var _prev1_y2 = _c1_y2 - 16;
     draw_set_color(make_color_rgb(255, 245, 235));
     draw_roundrect(_prev1_x1, _prev1_y1, _prev1_x2, _prev1_y2, false);
@@ -174,62 +174,65 @@ if (games_menu_open) {
     
     // Comida cayendo en la vista previa
     var _float1 = dsin(anim_t * 2) * 5;
-    draw_sprite_ext(spr_food_cherries, 0, _prev1_x1 + 40, _prev1_y1 + 45 + _float1, 0.7, 0.7, -15, c_white, 1);
-    draw_sprite_ext(spr_food_apple, 0, _prev1_x1 + 115, _prev1_y1 + 65 - _float1, 0.75, 0.75, 12, c_white, 1);
-    draw_sprite_ext(spr_food_donut, 0, _prev1_x1 + 75, _prev1_y1 + 115 + _float1 * 0.7, 0.65, 0.65, 0, c_white, 1);
+    draw_sprite_ext(spr_food_cherries, 0, _prev1_x1 + 38, _prev1_y1 + 45 + _float1, 0.7, 0.7, -15, c_white, 1);
+    draw_sprite_ext(spr_food_apple, 0, _prev1_x1 + 110, _prev1_y1 + 65 - _float1, 0.75, 0.75, 12, c_white, 1);
+    draw_sprite_ext(spr_food_donut, 0, _prev1_x1 + 72, _prev1_y1 + 115 + _float1 * 0.7, 0.65, 0.65, 0, c_white, 1);
     // Mini Pou mirando hacia arriba
-    draw_sprite_ext(spr_pou_emociones, 1, _prev1_x1 + 80, _prev1_y2 - 10, 0.42, 0.42, 0, c_white, 1);
+    draw_sprite_ext(spr_pou_emociones, 1, _prev1_x1 + 75, _prev1_y2 - 10, 0.42, 0.42, 0, c_white, 1);
     
     // Contenido descriptivo de la tarjeta 1
+    var _tx1 = _c1_x1 + 185;
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     
     // Etiqueta distintiva
     draw_set_color(make_color_rgb(255, 230, 220));
-    draw_roundrect(_c1_x1 + 195, _c1_y1 + 20, _c1_x1 + 310, _c1_y1 + 46, false);
+    draw_roundrect(_tx1, _c1_y1 + 18, _tx1 + 115, _c1_y1 + 44, false);
     draw_set_color(make_color_rgb(220, 80, 50));
     draw_set_halign(fa_center);
-    draw_text_transformed(_c1_x1 + 252, _c1_y1 + 24, "AGILIDAD", 0.95, 0.95, 0);
+    draw_text_transformed(_tx1 + 57, _c1_y1 + 22, "AGILIDAD", 0.95, 0.95, 0);
     
     // Título y subtítulo
     draw_set_halign(fa_left);
     draw_set_color(_c_pou_text);
-    draw_text_transformed(_c1_x1 + 195, _c1_y1 + 54, "Atrapar Comida", 1.45, 1.45, 0);
+    draw_text_transformed(_tx1, _c1_y1 + 52, "Atrapar Comida", 1.45, 1.45, 0);
     draw_set_color(make_color_rgb(140, 110, 80));
-    draw_text_transformed(_c1_x1 + 195, _c1_y1 + 88, "(Food Drop)", 1.05, 1.05, 0);
+    draw_text_transformed(_tx1, _c1_y1 + 84, "(Food Drop)", 1.05, 1.05, 0);
     
-    // Descripción
+    // Descripción (ancho calibrado a 390 para no desbordar margen derecho)
     draw_set_color(make_color_rgb(90, 75, 60));
-    draw_text_ext_transformed(_c1_x1 + 195, _c1_y1 + 115, "Mueve a Pou de lado a lado para comer las frutas y postres que caen del cielo. ¡No dejes caer ninguna comida!", 22, 450, 1.0, 1.0, 0);
+    draw_text_ext_transformed(_tx1, _c1_y1 + 112, "Mueve a Pou de lado a lado para comer las frutas y dulces que caen del cielo. No dejes caer la comida!", 21, 390, 1.0, 1.0, 0);
     
     // Recompensa
-    draw_sprite_ext(spr_moneda, 0, _c1_x1 + 205, _c1_y2 - 42, 0.4, 0.4, 0, c_white, 1);
+    draw_sprite_ext(spr_moneda, 0, _tx1 + 12, _c1_y2 - 38, 0.4, 0.4, 0, c_white, 1);
     draw_set_color(make_color_rgb(130, 95, 20));
     draw_set_valign(fa_middle);
-    draw_text_transformed(_c1_x1 + 225, _c1_y2 - 42, "+1 Moneda por bocado", 1.05, 1.05, 0);
+    draw_text_transformed(_tx1 + 32, _c1_y2 - 38, "+1 Moneda por comida", 1.05, 1.05, 0);
     
     // Botón JUGAR de la tarjeta 1
     var _btn1_x1 = _c1_x2 - 145;
-    var _btn1_y1 = _c1_y2 - 60;
-    var _btn1_x2 = _c1_x2 - 20;
-    var _btn1_y2 = _c1_y2 - 20;
+    var _btn1_y1 = _c1_y2 - 58;
+    var _btn1_x2 = _c1_x2 - 18;
+    var _btn1_y2 = _c1_y2 - 18;
+    var _h_btn1 = point_in_rectangle(mouse_x, mouse_y, _btn1_x1, _btn1_y1, _btn1_x2, _btn1_y2);
+    
     draw_set_color(make_color_rgb(200, 185, 165));
     draw_roundrect(_btn1_x1 + 2, _btn1_y1 + 2, _btn1_x2 + 2, _btn1_y2 + 2, false);
-    draw_set_color(_h_c1 ? make_color_rgb(95, 185, 75) : _c_pou_green);
+    draw_set_color(_h_btn1 ? make_color_rgb(105, 195, 85) : (_h_c1 ? make_color_rgb(95, 180, 75) : _c_pou_green));
     draw_roundrect(_btn1_x1, _btn1_y1, _btn1_x2, _btn1_y2, false);
     draw_set_color(_c_pou_border);
     draw_roundrect(_btn1_x1, _btn1_y1, _btn1_x2, _btn1_y2, true);
     draw_set_color(c_white);
     draw_set_halign(fa_center);
-    draw_text_transformed((_btn1_x1 + _btn1_x2) * 0.5, (_btn1_y1 + _btn1_y2) * 0.5, "JUGAR", 1.2, 1.2, 0);
+    draw_text_transformed((_btn1_x1 + _btn1_x2) * 0.5, (_btn1_y1 + _btn1_y2) * 0.5, "JUGAR", 1.25, 1.25, 0);
     
     // ========================================================
     // 2.5 TARJETA 2: JUEGO DE MEMORIA (Memory Match)
     // ========================================================
-    var _c2_x1 = 50;
-    var _c2_y1 = 470;
-    var _c2_x2 = 670;
-    var _c2_y2 = 720;
+    var _c2_x1 = 55;
+    var _c2_y1 = 430;
+    var _c2_x2 = 665;
+    var _c2_y2 = 695;
     var _h_c2 = point_in_rectangle(mouse_x, mouse_y, _c2_x1, _c2_y1, _c2_x2, _c2_y2);
     
     // Sombra y fondo de tarjeta 2
@@ -243,7 +246,7 @@ if (games_menu_open) {
     // Escuadro de vista previa izquierda (Ilustración cartas)
     var _prev2_x1 = _c2_x1 + 16;
     var _prev2_y1 = _c2_y1 + 16;
-    var _prev2_x2 = _prev2_x1 + 160;
+    var _prev2_x2 = _prev2_x1 + 150;
     var _prev2_y2 = _c2_y2 - 16;
     draw_set_color(make_color_rgb(235, 245, 255));
     draw_roundrect(_prev2_x1, _prev2_y1, _prev2_x2, _prev2_y2, false);
@@ -252,62 +255,63 @@ if (games_menu_open) {
     
     // Cartas en la vista previa
     var _float2 = dsin(anim_t * 2 + 90) * 4;
-    // Carta boca abajo
-    draw_sprite_ext(spr_carta_atras, 0, _prev2_x1 + 52, _prev2_y1 + 75 + _float2, 0.72, 0.72, -8, c_white, 1);
-    // Carta boca arriba mostrando avión o herradura
-    draw_sprite_ext(spr_carta_frente, 0, _prev2_x1 + 115, _prev2_y1 + 125 - _float2, 0.76, 0.76, 6, c_white, 1);
-    draw_sprite_ext(spr_game_avion, 0, _prev2_x1 + 115, _prev2_y1 + 125 - _float2, 0.76, 0.76, 6, c_white, 1);
+    draw_sprite_ext(spr_carta_atras, 0, _prev2_x1 + 48, _prev2_y1 + 75 + _float2, 0.72, 0.72, -8, c_white, 1);
+    draw_sprite_ext(spr_carta_frente, 0, _prev2_x1 + 110, _prev2_y1 + 125 - _float2, 0.76, 0.76, 6, c_white, 1);
+    draw_sprite_ext(spr_game_avion, 0, _prev2_x1 + 110, _prev2_y1 + 125 - _float2, 0.76, 0.76, 6, c_white, 1);
     
     // Contenido descriptivo de la tarjeta 2
+    var _tx2 = _c2_x1 + 185;
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     
     // Etiqueta distintiva
     draw_set_color(make_color_rgb(225, 240, 255));
-    draw_roundrect(_c2_x1 + 195, _c2_y1 + 20, _c2_x1 + 325, _c2_y1 + 46, false);
+    draw_roundrect(_tx2, _c2_y1 + 18, _tx2 + 120, _c2_y1 + 44, false);
     draw_set_color(make_color_rgb(40, 110, 210));
     draw_set_halign(fa_center);
-    draw_text_transformed(_c2_x1 + 260, _c2_y1 + 24, "MEMORIA", 0.95, 0.95, 0);
+    draw_text_transformed(_tx2 + 60, _c2_y1 + 22, "MEMORIA", 0.95, 0.95, 0);
     
     // Título y subtítulo
     draw_set_halign(fa_left);
     draw_set_color(_c_pou_text);
-    draw_text_transformed(_c2_x1 + 195, _c2_y1 + 54, "Juego de Memoria", 1.45, 1.45, 0);
+    draw_text_transformed(_tx2, _c2_y1 + 52, "Juego de Memoria", 1.45, 1.45, 0);
     draw_set_color(make_color_rgb(140, 110, 80));
-    draw_text_transformed(_c2_x1 + 195, _c2_y1 + 88, "(Memory Match)", 1.05, 1.05, 0);
+    draw_text_transformed(_tx2, _c2_y1 + 84, "(Memory Match)", 1.05, 1.05, 0);
     
-    // Descripción
+    // Descripción (ancho calibrado a 390 para no desbordar margen derecho)
     draw_set_color(make_color_rgb(90, 75, 60));
-    draw_text_ext_transformed(_c2_x1 + 195, _c2_y1 + 115, "Voltea las cartas y encuentra todas las parejas iguales. ¡Un clásico adictivo que desafía tu concentración y rapidez!", 22, 450, 1.0, 1.0, 0);
+    draw_text_ext_transformed(_tx2, _c2_y1 + 112, "Voltea las cartas y encuentra todas las parejas iguales. Un clasico adictivo que desafia tu concentracion y agilidad!", 21, 390, 1.0, 1.0, 0);
     
     // Recompensa
-    draw_sprite_ext(spr_moneda, 0, _c2_x1 + 205, _c2_y2 - 42, 0.4, 0.4, 0, c_white, 1);
+    draw_sprite_ext(spr_moneda, 0, _tx2 + 12, _c2_y2 - 38, 0.4, 0.4, 0, c_white, 1);
     draw_set_color(make_color_rgb(130, 95, 20));
     draw_set_valign(fa_middle);
-    draw_text_transformed(_c2_x1 + 225, _c2_y2 - 42, "+5 Monedas por pareja", 1.05, 1.05, 0);
+    draw_text_transformed(_tx2 + 32, _c2_y2 - 38, "+5 Monedas por pareja", 1.05, 1.05, 0);
     
     // Botón JUGAR de la tarjeta 2
     var _btn2_x1 = _c2_x2 - 145;
-    var _btn2_y1 = _c2_y2 - 60;
-    var _btn2_x2 = _c2_x2 - 20;
-    var _btn2_y2 = _c2_y2 - 20;
+    var _btn2_y1 = _c2_y2 - 58;
+    var _btn2_x2 = _c2_x2 - 18;
+    var _btn2_y2 = _c2_y2 - 18;
+    var _h_btn2 = point_in_rectangle(mouse_x, mouse_y, _btn2_x1, _btn2_y1, _btn2_x2, _btn2_y2);
+    
     draw_set_color(make_color_rgb(200, 185, 165));
     draw_roundrect(_btn2_x1 + 2, _btn2_y1 + 2, _btn2_x2 + 2, _btn2_y2 + 2, false);
-    draw_set_color(_h_c2 ? make_color_rgb(95, 185, 75) : _c_pou_green);
+    draw_set_color(_h_btn2 ? make_color_rgb(105, 195, 85) : (_h_c2 ? make_color_rgb(95, 180, 75) : _c_pou_green));
     draw_roundrect(_btn2_x1, _btn2_y1, _btn2_x2, _btn2_y2, false);
     draw_set_color(_c_pou_border);
     draw_roundrect(_btn2_x1, _btn2_y1, _btn2_x2, _btn2_y2, true);
     draw_set_color(c_white);
     draw_set_halign(fa_center);
-    draw_text_transformed((_btn2_x1 + _btn2_x2) * 0.5, (_btn2_y1 + _btn2_y2) * 0.5, "JUGAR", 1.2, 1.2, 0);
+    draw_text_transformed((_btn2_x1 + _btn2_x2) * 0.5, (_btn2_y1 + _btn2_y2) * 0.5, "JUGAR", 1.25, 1.25, 0);
     
     // ========================================================
     // 2.6 CAJA DE INFORMACIÓN Y RECOMPENSAS
     // ========================================================
-    var _info_x1 = 50;
-    var _info_y1 = 760;
-    var _info_x2 = 670;
-    var _info_y2 = 980;
+    var _info_x1 = 55;
+    var _info_y1 = 715;
+    var _info_x2 = 665;
+    var _info_y2 = 960;
     
     draw_set_color(_c_pou_shadow);
     draw_roundrect(_info_x1 + 2, _info_y1 + 3, _info_x2 + 2, _info_y2 + 3, false);
@@ -319,21 +323,21 @@ if (games_menu_open) {
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     draw_set_color(_c_pou_text);
-    draw_text_transformed(_info_x1 + 24, _info_y1 + 20, "¿Por que jugar con Pou?", 1.3, 1.3, 0);
+    draw_text_transformed(_info_x1 + 24, _info_y1 + 20, "Beneficios de jugar con Pou:", 1.3, 1.3, 0);
     
     draw_set_color(make_color_rgb(95, 80, 65));
-    draw_text_transformed(_info_x1 + 24, _info_y1 + 60, "*  Aumenta la barra de DIVERSION al 100% rapidamente.", 1.05, 1.05, 0);
-    draw_text_transformed(_info_x1 + 24, _info_y1 + 95, "*  Gana monedas para comprar comida en la Nevera y ropa.", 1.05, 1.05, 0);
-    draw_text_transformed(_info_x1 + 24, _info_y1 + 130, "*  Proximos minijuegos: Hill Drive, Sky Jump y Pelota.", 1.05, 1.05, 0);
-    draw_text_transformed(_info_x1 + 24, _info_y1 + 165, "*  Los minijuegos son los mas sencillos y faciles de disfrutar.", 1.05, 1.05, 0);
+    draw_text_transformed(_info_x1 + 24, _info_y1 + 60, "*  Aumenta la barra de DIVERSION al 100% de inmediato.", 1.05, 1.05, 0);
+    draw_text_transformed(_info_x1 + 24, _info_y1 + 95, "*  Gana monedas para comprar rica comida y ropa.", 1.05, 1.05, 0);
+    draw_text_transformed(_info_x1 + 24, _info_y1 + 130, "*  Proximos minijuegos en camino: Hill Drive y Sky Jump.", 1.05, 1.05, 0);
+    draw_text_transformed(_info_x1 + 24, _info_y1 + 165, "*  Partidas rapidas, divertidas y faciles de disfrutar.", 1.05, 1.05, 0);
     
     // ========================================================
     // 2.7 BOTÓN INFERIOR "VOLVER A LA SALA"
     // ========================================================
-    var _close_w = 320;
-    var _close_h = 48;
+    var _close_w = 340;
+    var _close_h = 56;
     var _cl_x1 = 360 - _close_w * 0.5;
-    var _cl_y1 = 1152;
+    var _cl_y1 = 1005;
     var _cl_x2 = _cl_x1 + _close_w;
     var _cl_y2 = _cl_y1 + _close_h;
     
